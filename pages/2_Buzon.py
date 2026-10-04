@@ -20,6 +20,30 @@ GEMINI_MODEL = "gemini-3.8-flash"
 st.markdown("""
 <style>
 
+/* ==========================================
+   BOTONES ALEGRA
+   ========================================== */
+
+div.stButton > button {
+    background-color: #2fb7b5;
+    color: white;
+    border: 1px solid #2fb7b5;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+div.stButton > button:hover {
+    background-color: #17213a;
+    border-color: #17213a;
+    color: white;
+}
+
+div.stButton > button:active {
+    background-color: #17213a;
+    border-color: #17213a;
+}
+
 .main {
     background-color: #ffffff;
 }
@@ -70,7 +94,7 @@ with header_col2:
     st.markdown("<br>", unsafe_allow_html=True)
 
     if st.button(
-        "＋ Agregar reporte",
+        "＋ Reporte manual",
         use_container_width=True,
         type="primary"
     ):
@@ -102,7 +126,7 @@ if st.session_state.show_add_report:
 
             tipo = st.selectbox(
                 "Tipo",
-                ["Reseña", "Ticket"]
+                ["Reseña", "Ticket", "Sesión con cliente"]
             )
 
         with col2:
