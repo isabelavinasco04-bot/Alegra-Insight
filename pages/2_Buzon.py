@@ -2,6 +2,11 @@ import streamlit as st
 from google import genai
 from data import ALL_FEEDBACK
 
+analisis_page = st.Page(
+    "pages/5_Analisis.py",
+    title="Análisis"
+)
+
 # ==========================================
 # CONEXIÓN CON GEMINI
 # ==========================================
@@ -411,5 +416,5 @@ for item in filtered_data:
 
                 st.session_state.selected_feedback = item
 
-                st.switch_page("5_Analisis.py")
+                st.switch_page(analisis_page)
 
