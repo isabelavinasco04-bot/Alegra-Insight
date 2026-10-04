@@ -2,15 +2,17 @@ import streamlit as st
 from google import genai
 from data import ALL_FEEDBACK
 
+
 # ==========================================
 # CONFIGURACIÓN
 # ==========================================
 
 st.set_page_config(
     page_title="Alegra AI",
-    page_icon="✦",
+    page_icon="🌿",
     layout="wide"
 )
+
 
 # ==========================================
 # CONEXIÓN CON GEMINI
@@ -21,7 +23,7 @@ client = genai.Client(
 )
 
 GEMINI_MODEL = "gemini-3.8-flash"
-)
+
 
 # ==========================================
 # ESTILOS
@@ -44,21 +46,6 @@ h1 {
     color: #172554;
 }
 
-.feedback-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 10px;
-    background: white;
-}
-
-.badge {
-    padding: 4px 9px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,7 +56,7 @@ h1 {
 
 with st.sidebar:
 
-    st.markdown("## Alegra")
+    st.markdown("## 🌿 alegra")
 
     st.markdown("---")
 
@@ -94,8 +81,6 @@ st.caption(
     "Todos los comentarios y tickets, organizados y analizados con IA."
 )
 
-st.markdown("")
-
 
 # ==========================================
 # MÉTRICAS
@@ -112,13 +97,19 @@ with col1:
 with col2:
     st.metric(
         "Reseñas",
-        len([x for x in ALL_FEEDBACK if x["tipo"] == "Reseña"])
+        len([
+            x for x in ALL_FEEDBACK
+            if x["tipo"] == "Reseña"
+        ])
     )
 
 with col3:
     st.metric(
         "Tickets",
-        len([x for x in ALL_FEEDBACK if x["tipo"] == "Ticket"])
+        len([
+            x for x in ALL_FEEDBACK
+            if x["tipo"] == "Ticket"
+        ])
     )
 
 with col4:
@@ -135,7 +126,7 @@ st.markdown("---")
 
 
 # ==========================================
-# FILTROS
+# PESTAÑAS
 # ==========================================
 
 tab1, tab2, tab3 = st.tabs([
@@ -144,24 +135,14 @@ tab1, tab2, tab3 = st.tabs([
     "Tickets"
 ])
 
-with tab1:
 
-    selected_data = ALL_FEEDBACK
+if "tab_selection" not in st.session_state:
+    st.session_state.tab_selection = "Todos"
 
-with tab2:
 
-    selected_data = [
-        x for x in ALL_FEEDBACK
-        if x["tipo"] == "Reseña"
-    ]
-
-with tab3:
-
-    selected_data = [
-        x for x in ALL_FEEDBACK
-        if x["tipo"] == "Ticket"
-    ]
-
+# ==========================================
+# FILTROS
+# ==========================================
 
 col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
 
@@ -175,7 +156,10 @@ with col1:
 with col2:
 
     countries = sorted(
-        list(set(x["pais"] for x in ALL_FEEDBACK))
+        list(set(
+            x["pais"]
+            for x in ALL_FEEDBACK
+        ))
     )
 
     country_filter = st.selectbox(
@@ -199,130 +183,142 @@ with col4:
 
 
 # ==========================================
-# APLICAR FILTROS
+# FUNCIÓN PARA MOSTRAR CASOS
 # ==========================================
 
-filtered_data = selected_data
+def show_feedback(items):
 
-if search:
+    filtered_data = items
 
-    filtered_data = [
-        x for x in filtered_data
-        if search.lower() in x["comentario"].lower()
-    ]
+    # Buscar
+    if search:
 
-if country_filter != "Todos":
+        filtered_data = [
+            x for x in filtered_data
+            if search.lower() in x["comentario"].lower()
+        ]
 
-    filtered_data = [
-        x for x in filtered_data
-        if x["pais"] == country_filter
-    ]
+    # País
+    if country_filter != "Todos":
 
-if urgency_filter != "Todas":
+        filtered_data = [
+            x for x in filtered_data
+            if x["pais"] == country_filter
+        ]
 
-    filtered_data = [
-        x for x in filtered_data
-        if x["urgencia"] == urgency_filter
-    ]
+    # Urgencia
+    if urgency_filter != "Todas":
 
-if status_filter != "Todos":
+        filtered_data = [
+            x for x in filtered_data
+            if x["urgencia"] == urgency_filter
+        ]
 
-    filtered_data = [
-        x for x in filtered_data
-        if x["estado"] == status_filter
-    ]
+    # Estado
+    if status_filter != "Todos":
 
+        filtered_data = [
+            x for x in filtered_data
+            if x["estado"] == status_filter
+        ]
 
-st.markdown("")
+    st.markdown(
+        f"### {len(filtered_data)} resultados"
+    )
 
+    # ======================================
+    # CASOS
+    # ======================================
 
-# ==========================================
-# LISTADO
-# ==========================================
+    for item in filtered_data:
 
-st.subheader(
-    f"{len(filtered_data)} resultados"
-)
+        with st.container(border=True):
 
-for item in filtered_data:
-
-    with st.container(border=True):
-
-        col1, col2, col3, col4, col5 = st.columns(
-            [0.6, 4, 1.2, 1.4, 1]
-        )
-
-        with col1:
-
-            if item["tipo"] == "Ticket":
-                st.write("🎫")
-            else:
-                st.write("💬")
-
-        with col2:
-
-            st.write(
-                f"**{item['comentario']}**"
+            col1, col2, col3, col4, col5 = st.columns(
+                [0.5, 4, 1.2, 1.2, 1.3]
             )
 
-            st.caption(
-                f"{item['tipo']} · ID #{item['id']}"
-            )
+            # Tipo
+            with col1:
 
-        with col3:
+                if item["tipo"] == "Ticket":
+                    st.write("🎫")
+                else:
+                    st.write("💬")
 
-            st.write(item["pais"])
+            # Comentario
+            with col2:
 
-        with col4:
+                st.write(
+                    f"**{item['comentario']}**"
+                )
 
-            if item["urgencia"] == "Alta":
-                st.error("🔴 Alta")
+                st.caption(
+                    f"{item['tipo']} · ID #{item['id']}"
+                )
 
-            elif item["urgencia"] == "Media":
-                st.warning("🟡 Media")
+            # País
+            with col3:
 
-            else:
-                st.success("🟢 Baja")
+                st.write(item["pais"])
 
-        with col5:
+            # Urgencia
+            with col4:
 
-            if item["estado"] == "Sin analizar":
-                st.caption("Sin analizar")
-            else:
-                st.success("Analizado")
+                if item["urgencia"] == "Alta":
 
-        # ----------------------------------
-        # ANALIZAR
-        # ----------------------------------
+                    st.error("🔴 Alta")
 
-       # ----------------------------------
-# ANALIZAR CON IA
-# ----------------------------------
+                elif item["urgencia"] == "Media":
 
-if st.button(
-    "Analizar con IA",
-    key=f"analizar_{item['id']}"
-):
+                    st.warning("🟡 Media")
 
-    with st.spinner("Analizando comentario..."):
+                else:
 
-        try:
+                    st.success("🟢 Baja")
 
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=f"""
+            # Estado / botón
+            with col5:
+
+                if item["estado"] == "Sin analizar":
+
+                    st.caption("Sin analizar")
+
+                else:
+
+                    st.success("Analizado")
+
+            # ==================================
+            # BOTÓN IA
+            # ==================================
+
+            if st.button(
+                "Analizar con IA",
+                key=f"analizar_{item['id']}"
+            ):
+
+                with st.spinner(
+                    "Analizando comentario..."
+                ):
+
+                    try:
+
+                        response = client.models.generate_content(
+                            model=GEMINI_MODEL,
+                            contents=f"""
 Eres un Product Manager de Alegra.
 
-Analiza este comentario de usuario:
+Analiza el siguiente comentario de usuario.
 
+COMENTARIO:
 {item['comentario']}
 
-Contexto:
+CONTEXTO:
 - Tipo: {item['tipo']}
 - País: {item['pais']}
 - Calificación: {item.get('calificacion', 'No aplica')}
 
-Devuelve:
+Necesito que identifiques:
 
 1. Problema identificado
 2. Severidad
@@ -332,39 +328,74 @@ Devuelve:
 6. Información faltante
 
 No inventes información.
-Diferencia claramente los hechos de las hipótesis.
-Si algo no está disponible, indica "Por confirmar".
+
+Diferencia claramente los hechos
+de las hipótesis.
+
+Si algo no está disponible,
+indica "Por confirmar".
 """
-            )
+                        )
 
-            # Mostrar resultado solamente si Gemini respondió
-            if response and response.text:
+                        if response and response.text:
 
-                st.success("Análisis completado")
+                            st.success(
+                                "Análisis completado"
+                            )
 
-                st.markdown("### Análisis de IA")
+                            st.markdown(
+                                "### 🧠 Análisis de IA"
+                            )
 
-                st.write(response.text)
+                            st.write(
+                                response.text
+                            )
 
-            else:
+                        else:
 
-                st.warning(
-                    "Gemini no devolvió contenido. Intenta nuevamente."
-                )
+                            st.warning(
+                                "Gemini no devolvió contenido. "
+                                "Intenta nuevamente."
+                            )
 
-        except Exception as e:
+                    except Exception as e:
 
-            st.error(
-                "No pudimos analizar este comentario en este momento."
-            )
+                        st.error(
+                            "No pudimos analizar este comentario "
+                            "en este momento."
+                        )
 
-            st.caption(
-                "Intenta nuevamente en unos segundos."
-            )
+                        st.caption(
+                            "Intenta nuevamente en unos segundos."
+                        )
 
-            # Información para depuración
-            st.code(str(e))
+                        st.code(str(e))
 
-        st.subheader("Análisis de IA")
 
-        st.write(response.text)
+# ==========================================
+# CONTENIDO DE LAS PESTAÑAS
+# ==========================================
+
+with tab1:
+
+    show_feedback(ALL_FEEDBACK)
+
+
+with tab2:
+
+    reviews = [
+        x for x in ALL_FEEDBACK
+        if x["tipo"] == "Reseña"
+    ]
+
+    show_feedback(reviews)
+
+
+with tab3:
+
+    tickets = [
+        x for x in ALL_FEEDBACK
+        if x["tipo"] == "Ticket"
+    ]
+
+    show_feedback(tickets)
