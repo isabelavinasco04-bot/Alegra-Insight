@@ -37,9 +37,8 @@ archivo = st.file_uploader(
 
 if archivo is not None:
 
-    st.audio(
-        archivo
-    ) if archivo.type.startswith("audio") else None
+    if archivo.type and archivo.type.startswith("audio"):
+    st.audio(archivo)
 
 
     if st.button(
