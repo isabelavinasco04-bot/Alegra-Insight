@@ -545,17 +545,13 @@ if analysis_key not in st.session_state:
 
                 st.stop()
 
-        except Exception:
-
-            st.error(
-                "No pudimos completar el análisis en este momento."
-            )
-
-            st.caption(
-                "Revisa la conexión con Gemini e intenta nuevamente."
-            )
-
-            st.stop()
+    except Exception as e:
+    
+        st.error("No pudimos completar el análisis.")
+    
+        st.error(f"Error de Gemini: {e}")
+    
+        st.exception(e)
 
 
 analysis = st.session_state[analysis_key]
