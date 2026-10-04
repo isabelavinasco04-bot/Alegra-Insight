@@ -188,12 +188,6 @@ if question:
 
             respuesta = preguntar_a_ia(question)
 
-            st.markdown(
-                """
-                <div class="card">
-                """,
-                unsafe_allow_html=True
-            )
 
             st.markdown("### Alegra Insight")
 
