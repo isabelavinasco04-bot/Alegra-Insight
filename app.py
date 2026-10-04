@@ -7,7 +7,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Alegra Insight",
-    page_icon="🌿",
+    page_icon="Logo_de_Alegra.png",
     layout="wide"
 )
 
