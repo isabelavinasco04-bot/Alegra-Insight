@@ -1,4 +1,6 @@
 import streamlit as st
+
+
 # ==========================================
 # DATOS DEL EQUIPO
 # ==========================================
@@ -11,14 +13,25 @@ TEAM_MEMBERS = [
         "estado": "Disponible",
         "reportes": [
             {
-                "titulo": "Error al emitir facturas · México",
+                "id": 1,
+                "titulo": "Error al emitir facturas",
                 "urgencia": "Alta",
-                "estado": "En progreso"
+                "estado": "En progreso",
+                "pais": "México"
             },
             {
+                "id": 2,
                 "titulo": "La app se cierra al abrir Reportes",
                 "urgencia": "Alta",
-                "estado": "Pendiente"
+                "estado": "Pendiente",
+                "pais": "Colombia"
+            },
+            {
+                "id": 3,
+                "titulo": "Problema con impresión desde celular",
+                "urgencia": "Baja",
+                "estado": "Resuelto",
+                "pais": "Colombia"
             }
         ]
     },
@@ -29,14 +42,18 @@ TEAM_MEMBERS = [
         "estado": "Ocupado",
         "reportes": [
             {
+                "id": 4,
                 "titulo": "Subir e.firma desde el celular",
                 "urgencia": "Media",
-                "estado": "En progreso"
+                "estado": "En progreso",
+                "pais": "México"
             },
             {
-                "titulo": "Pantalla en blanco · Colombia",
-                "urgencia": "Media",
-                "estado": "Pendiente"
+                "id": 5,
+                "titulo": "Pantalla blanca después de actualizar",
+                "urgencia": "Alta",
+                "estado": "Pendiente",
+                "pais": "Colombia"
             }
         ]
     },
@@ -47,18 +64,23 @@ TEAM_MEMBERS = [
         "estado": "Disponible",
         "reportes": [
             {
+                "id": 6,
                 "titulo": "Botones muy pequeños",
                 "urgencia": "Baja",
-                "estado": "En revisión"
+                "estado": "En revisión",
+                "pais": "Colombia"
             },
             {
-                "titulo": "Agregar descuento en la factura",
+                "id": 7,
+                "titulo": "Agregar descuento por línea",
                 "urgencia": "Media",
-                "estado": "En progreso"
+                "estado": "En progreso",
+                "pais": "España"
             }
         ]
     }
 ]
+
 
 # ==========================================
 # CONFIGURACIÓN
@@ -69,70 +91,6 @@ st.set_page_config(
     page_icon="Logo_pequeño_alegra.webp",
     layout="wide"
 )
-
-
-# ==========================================
-# REPORTES ASIGNADOS AL EQUIPO
-# ==========================================
-
-TEAM_REPORTS = [
-    {
-        "id": 1,
-        "miembro_id": 1,
-        "titulo": "Error al emitir facturas",
-        "urgencia": "Alta",
-        "estado": "En progreso",
-        "pais": "México"
-    },
-    {
-        "id": 2,
-        "miembro_id": 1,
-        "titulo": "La app se cierra al abrir Reportes",
-        "urgencia": "Media",
-        "estado": "Pendiente",
-        "pais": "Colombia"
-    },
-    {
-        "id": 3,
-        "miembro_id": 1,
-        "titulo": "Problema con impresión desde celular",
-        "urgencia": "Baja",
-        "estado": "Resuelto",
-        "pais": "Colombia"
-    },
-    {
-        "id": 4,
-        "miembro_id": 2,
-        "titulo": "Subir e.firma desde el celular",
-        "urgencia": "Media",
-        "estado": "En progreso",
-        "pais": "México"
-    },
-    {
-        "id": 5,
-        "miembro_id": 2,
-        "titulo": "Pantalla blanca después de actualizar",
-        "urgencia": "Alta",
-        "estado": "Pendiente",
-        "pais": "Colombia"
-    },
-    {
-        "id": 6,
-        "miembro_id": 3,
-        "titulo": "Botones muy pequeños",
-        "urgencia": "Baja",
-        "estado": "En progreso",
-        "pais": "Colombia"
-    },
-    {
-        "id": 7,
-        "miembro_id": 3,
-        "titulo": "Agregar descuento por línea",
-        "urgencia": "Media",
-        "estado": "En revisión",
-        "pais": "España"
-    }
-]
 
 
 # ==========================================
@@ -165,7 +123,9 @@ st.markdown(
         margin-bottom: 25px;
     }
 
-    /* Métricas */
+    /* ==========================================
+       MÉTRICAS
+       ========================================== */
 
     [data-testid="stMetric"] {
         background-color: #f8fafb;
@@ -182,7 +142,10 @@ st.markdown(
         color: #17213a;
     }
 
-    /* Botones */
+
+    /* ==========================================
+       BOTONES
+       ========================================== */
 
     div.stButton > button {
         border-radius: 8px;
@@ -204,7 +167,10 @@ st.markdown(
         opacity: 0.9;
     }
 
-    /* Tabs */
+
+    /* ==========================================
+       TABS
+       ========================================== */
 
     button[data-baseweb="tab"] {
         color: #687080;
@@ -215,12 +181,13 @@ st.markdown(
         color: #2fb7b5;
     }
 
-    /* Expander */
 
-    [data-testid="stExpander"] {
-        border: 1px solid #e3e7ed;
+    /* ==========================================
+       CONTENEDORES
+       ========================================== */
+
+    [data-testid="stVerticalBlockBorderWrapper"] {
         border-radius: 14px;
-        background: white;
     }
 
     </style>
@@ -240,9 +207,12 @@ with header_col1:
     st.title("Equipos")
 
     st.markdown(
-        '<div class="page-subtitle">'
-        'Da seguimiento a los reportes y conoce en qué está trabajando cada miembro del equipo.'
-        '</div>',
+        """
+        <div class="page-subtitle">
+            Da seguimiento a los reportes y conoce en qué está
+            trabajando cada miembro del equipo.
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
@@ -258,12 +228,17 @@ with header_col2:
 
 
 # ==========================================
-# FORMULARIO AGREGAR MIEMBRO
+# ESTADO DEL FORMULARIO
 # ==========================================
 
 if "show_member_form" not in st.session_state:
+
     st.session_state["show_member_form"] = False
 
+
+# ==========================================
+# FORMULARIO NUEVO MIEMBRO
+# ==========================================
 
 if st.session_state["show_member_form"]:
 
@@ -302,11 +277,25 @@ if st.session_state["show_member_form"]:
 
                 if nuevo_nombre.strip():
 
+                    nuevo_id = len(TEAM_MEMBERS) + 1
+
+                    TEAM_MEMBERS.append(
+                        {
+                            "id": nuevo_id,
+                            "nombre": nuevo_nombre.strip(),
+                            "rol": nuevo_rol,
+                            "estado": "Disponible",
+                            "reportes": []
+                        }
+                    )
+
+                    st.session_state["show_member_form"] = False
+
                     st.success(
                         f"{nuevo_nombre} fue agregado al equipo."
                     )
 
-                    st.session_state["show_member_form"] = False
+                    st.rerun()
 
                 else:
 
@@ -322,6 +311,7 @@ if st.session_state["show_member_form"]:
             ):
 
                 st.session_state["show_member_form"] = False
+
                 st.rerun()
 
 
@@ -329,51 +319,78 @@ st.divider()
 
 
 # ==========================================
-# MÉTRICAS
+# CALCULAR MÉTRICAS
 # ==========================================
 
+todos_los_reportes = []
+
+for miembro in TEAM_MEMBERS:
+
+    for reporte in miembro["reportes"]:
+
+        todos_los_reportes.append(reporte)
+
+
 total_progress = sum(
-    1 for reporte in TEAM_REPORTS
+    1
+    for reporte in todos_los_reportes
     if reporte["estado"] == "En progreso"
 )
 
+
 total_resolved = sum(
-    1 for reporte in TEAM_REPORTS
+    1
+    for reporte in todos_los_reportes
     if reporte["estado"] == "Resuelto"
 )
 
+
 total_pending = sum(
-    1 for reporte in TEAM_REPORTS
+    1
+    for reporte in todos_los_reportes
     if reporte["estado"] == "Pendiente"
 )
 
+
 total_review = sum(
-    1 for reporte in TEAM_REPORTS
+    1
+    for reporte in todos_los_reportes
     if reporte["estado"] == "En revisión"
 )
 
 
+# ==========================================
+# MÉTRICAS
+# ==========================================
+
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
+
     st.metric(
         "En progreso",
         total_progress
     )
 
+
 with col2:
+
     st.metric(
         "Resueltos",
         total_resolved
     )
 
+
 with col3:
+
     st.metric(
         "Pendientes",
         total_pending
     )
 
+
 with col4:
+
     st.metric(
         "Necesitan revisión",
         total_review
@@ -414,25 +431,23 @@ def mostrar_reporte(reporte):
             f"{reporte['pais']} · Reporte #{reporte['id']}"
         )
 
+
     with col2:
 
         if reporte["urgencia"] == "Alta":
 
-            st.error(
-                "🔴 Alta"
-            )
+            st.error("🔴 Alta")
 
         elif reporte["urgencia"] == "Media":
 
-            st.warning(
-                "🟡 Media"
-            )
+            st.warning("🟡 Media")
 
         else:
 
-            st.success(
-                "🟢 Baja"
-            )
+            st.success("🟢 Baja")
+
+
+    # Estado
 
     if reporte["estado"] == "En progreso":
 
@@ -452,7 +467,7 @@ def mostrar_reporte(reporte):
             "En revisión"
         )
 
-    else:
+    elif reporte["estado"] == "Resuelto":
 
         st.success(
             "Resuelto"
@@ -465,11 +480,7 @@ def mostrar_reporte(reporte):
 
 def mostrar_miembro(miembro):
 
-    reportes = [
-        reporte
-        for reporte in TEAM_REPORTS
-        if reporte["miembro_id"] == miembro["id"]
-    ]
+    reportes = miembro["reportes"]
 
     iniciales = "".join(
         palabra[0]
@@ -477,13 +488,11 @@ def mostrar_miembro(miembro):
     ).upper()
 
 
-    # ======================================
-    # CARD DEL MIEMBRO
-    # ======================================
-
     with st.container(border=True):
 
-        # Cabecera
+        # --------------------------------------
+        # CABECERA DEL MIEMBRO
+        # --------------------------------------
 
         col1, col2 = st.columns([1, 5])
 
@@ -513,6 +522,7 @@ def mostrar_miembro(miembro):
                 unsafe_allow_html=True
             )
 
+
         with col2:
 
             st.markdown(
@@ -529,9 +539,9 @@ def mostrar_miembro(miembro):
         )
 
 
-        # ==================================
-        # REPORTES
-        # ==================================
+        # --------------------------------------
+        # REPORTES DEL MIEMBRO
+        # --------------------------------------
 
         if not reportes:
 
@@ -558,7 +568,7 @@ with tab_general:
 
     columns = st.columns(2)
 
-    for index, miembro in enumerate(data.TEAM_MEMBERS):
+    for index, miembro in enumerate(TEAM_MEMBERS):
 
         with columns[index % 2]:
 
@@ -573,9 +583,10 @@ with tab_dev:
 
     desarrolladores = [
         miembro
-        for miembro in data.TEAM_MEMBERS
+        for miembro in TEAM_MEMBERS
         if miembro["rol"] == "Desarrollador"
     ]
+
 
     if desarrolladores:
 
@@ -602,9 +613,10 @@ with tab_design:
 
     disenadores = [
         miembro
-        for miembro in data.TEAM_MEMBERS
+        for miembro in TEAM_MEMBERS
         if miembro["rol"] == "Diseñadora"
     ]
+
 
     if disenadores:
 
