@@ -42,6 +42,10 @@ st.markdown("""
         background-color: #f7f8fa;
     }
 
+    /* =========================
+       HERO
+    ========================= */
+
     .hero {
         text-align: center;
         padding-top: 60px;
@@ -58,6 +62,10 @@ st.markdown("""
         font-size: 20px;
         color: #687080;
     }
+
+    /* =========================
+       TARJETAS
+    ========================= */
 
     .card {
         background: white;
@@ -78,18 +86,31 @@ st.markdown("""
         line-height: 1.5;
     }
 
-        .stButton > button {
-        background-color: #172B4D;
+    /* =========================
+       BOTONES ALEGRA
+       ========================= */
+
+    div.stButton > button {
+        background-color: #2eb5b3;
         color: white;
-        border: 1px solid #172B4D;
+        border: 1px solid #2eb5b3;
         border-radius: 8px;
         font-weight: 600;
+        padding: 10px 20px;
+        transition: all 0.2s ease;
     }
 
-    .stButton > button:hover {
-        background-color: #0F1F38;
+    /* HOVER */
+    div.stButton > button:hover {
+        background-color: #17213a;
+        border-color: #17213a;
         color: white;
-        border-color: #0F1F38;
+    }
+
+    /* CLICK */
+    div.stButton > button:active {
+        background-color: #17213a;
+        border-color: #17213a;
     }
 
 </style>
