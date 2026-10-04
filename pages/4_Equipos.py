@@ -1,4 +1,5 @@
 import streamlit as st
+import textwrap
 from data import ALL_FEEDBACK
 
 TEAM_MEMBERS = [
@@ -477,54 +478,55 @@ def mostrar_miembro(miembro):
     with st.container():
 
         st.markdown(
-            f"""
-            <div class="member-card">
+            textwrap.dedent(
+                f"""
+        <div class="member-card">
 
-                <div style="
-                    display:flex;
-                    align-items:center;
-                    gap:14px;
-                    margin-bottom:18px;
-                ">
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:14px;
+                margin-bottom:18px;
+            ">
 
-                    <div class="avatar">
-                        {iniciales}
+                <div class="avatar">
+                    {iniciales}
+                </div>
+
+                <div>
+
+                    <div style="
+                        color:#17213a;
+                        font-size:18px;
+                        font-weight:700;
+                    ">
+                        {miembro["nombre"]}
                     </div>
 
-                    <div>
-
-                        <div style="
-                            color:#17213a;
-                            font-size:18px;
-                            font-weight:700;
-                        ">
-                            {miembro["nombre"]}
-                        </div>
-
-                        <div style="
-                            color:#687080;
-                            font-size:13px;
-                            margin-top:3px;
-                        ">
-                            {miembro["rol"]} · {miembro["estado"]}
-                        </div>
-
+                    <div style="
+                        color:#687080;
+                        font-size:13px;
+                        margin-top:3px;
+                    ">
+                        {miembro["rol"]} · {miembro["estado"]}
                     </div>
 
                 </div>
 
-                <div style="
-                    color:#17213a;
-                    font-size:13px;
-                    font-weight:700;
-                    margin-bottom:8px;
-                ">
-                    Reportes asignados · {len(reportes)}
-                </div>
+            </div>
 
-            """,
+            <div style="
+                color:#17213a;
+                font-size:13px;
+                font-weight:700;
+                margin-bottom:8px;
+            ">
+                Reportes asignados · {len(reportes)}
+            </div>
+                """
+            ),
             unsafe_allow_html=True
-        )
+            )
 
         if reportes:
 
