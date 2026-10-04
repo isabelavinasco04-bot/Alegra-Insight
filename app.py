@@ -11,7 +11,55 @@ st.set_page_config(
     layout="wide"
 )
 
+# ==========================================
+# ESTILOS SIDEBAR
+# ==========================================
 
+st.markdown("""
+<style>
+
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background:
+            radial-gradient(
+                circle at 20% 10%,
+                rgba(40, 191, 190, 0.35) 0%,
+                rgba(40, 191, 190, 0.10) 28%,
+                transparent 55%
+            ),
+            linear-gradient(
+                180deg,
+                #17213a 0%,
+                #172b42 50%,
+                #123d4b 100%
+            );
+
+        border-right: none;
+    }
+
+    /* Links de navegación */
+    section[data-testid="stSidebar"] a {
+        color: #ffffff !important;
+        border-radius: 10px;
+        margin: 4px 0;
+        transition: all 0.2s ease;
+    }
+
+    /* Hover */
+    section[data-testid="stSidebar"] a:hover {
+        background-color: #2fb7b5 !important;
+        color: #17213a !important;
+    }
+
+    /* Página activa */
+    section[data-testid="stSidebar"] a[aria-current="page"] {
+        background-color: #2fb7b5 !important;
+        color: #17213a !important;
+        font-weight: 600;
+    }
+
+</style>
+""", unsafe_allow_html=True)
 # ==========================================
 # PÁGINAS
 # ==========================================
@@ -90,18 +138,19 @@ with st.sidebar:
 
     # Usuario
     st.markdown(
-        """
-        <div style="
-            color:#687080;
-            font-size:14px;
-        ">
-            Sofía<br>
-            <span style="color:#9aa0aa;">
-                Product Manager
-            </span>
-        </div>
-        """,
-        unsafe_allow_html=True
+    """
+    <div style="
+        color:#ffffff;
+        font-size:14px;
+        margin-top:10px;
+    ">
+        Sofía<br>
+        <span style="color:#9fd9d8;">
+            Product Manager
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True
     )
 
 
