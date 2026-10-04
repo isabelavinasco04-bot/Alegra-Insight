@@ -186,7 +186,7 @@ with col4:
 # FUNCIÓN PARA MOSTRAR CASOS
 # ==========================================
 
-def show_feedback(items):
+def show_feedback(items, view_key):
 
     filtered_data = items
 
@@ -293,8 +293,8 @@ def show_feedback(items):
             # ==================================
 
             if st.button(
-                "Analizar con IA",
-                key=f"analizar_{item['id']}"
+            "Analizar con IA",
+            key=f"analizar_{view_key}_{item['id']}"
             ):
 
                 with st.spinner(
