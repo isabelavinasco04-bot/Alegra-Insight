@@ -40,58 +40,269 @@ st.markdown("""
     padding-top: 2rem;
     padding-left: 4rem;
     padding-right: 4rem;
+    padding-bottom: 4rem;
 }
+
+
+/* ------------------------------------------
+   TÍTULOS
+------------------------------------------ */
 
 h1, h2, h3 {
     color: #17213a;
 }
 
-.analysis-card {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 18px;
-}
 
-.analysis-card:hover {
-    border-color: #2fb7b5;
-}
+/* ------------------------------------------
+   BOTONES ALEGRA
+------------------------------------------ */
 
-.section-title {
-    color: #17213a;
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
+div.stButton > button,
+div.stDownloadButton > button {
 
-.label {
-    color: #687080;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.report-original {
-    background-color: #f7f8fa;
-    border-left: 4px solid #2fb7b5;
-    border-radius: 10px;
-    padding: 18px;
-    margin: 15px 0 25px 0;
-}
-
-div.stButton > button {
     background-color: #2fb7b5;
     color: white;
+
     border: 1px solid #2fb7b5;
     border-radius: 8px;
+
     font-weight: 600;
-    transition: all 0.2s ease;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
-div.stButton > button:hover {
+
+div.stButton > button:hover,
+div.stDownloadButton > button:hover {
+
     background-color: #17213a;
     border-color: #17213a;
     color: white;
+
+    transform: translateY(-1px);
+}
+
+
+/* ------------------------------------------
+   BOTÓN SECUNDARIO
+------------------------------------------ */
+
+.secondary-button div.stButton > button {
+
+    background-color: white;
+    color: #17213a;
+
+    border: 1px solid #d9dee7;
+}
+
+
+.secondary-button div.stButton > button:hover {
+
+    background-color: #17213a;
+    color: white;
+
+    border-color: #17213a;
+}
+
+
+/* ------------------------------------------
+   REPORTE ORIGINAL
+------------------------------------------ */
+
+.report-original {
+
+    background-color: #f7f9fb;
+
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #2fb7b5;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    margin-top: 20px;
+    margin-bottom: 28px;
+}
+
+
+.report-label {
+
+    color: #687080;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+
+.report-comment {
+
+    color: #17213a;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+}
+
+
+.report-meta {
+
+    color: #687080;
+
+    margin-top: 12px;
+
+    font-size: 14px;
+}
+
+
+/* ------------------------------------------
+   COLUMNAS DEL ANÁLISIS
+------------------------------------------ */
+
+.analysis-main {
+
+    background: white;
+
+    border: 1px solid #e3e7ed;
+
+    border-radius: 16px;
+
+    padding: 26px;
+
+    min-height: 500px;
+
+    box-shadow: 0 2px 8px rgba(23,37,84,0.03);
+}
+
+
+.analysis-side {
+
+    background: white;
+
+    border: 1px solid #e3e7ed;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    margin-bottom: 16px;
+
+    box-shadow: 0 2px 8px rgba(23,37,84,0.03);
+}
+
+
+.analysis-side:hover,
+.analysis-main:hover {
+
+    border-color: #2fb7b5;
+
+}
+
+
+/* ------------------------------------------
+   TÍTULOS DE SECCIÓN
+------------------------------------------ */
+
+.analysis-title {
+
+    color: #17213a;
+
+    font-size: 19px;
+
+    font-weight: 700;
+
+    margin-bottom: 16px;
+}
+
+
+.side-title {
+
+    color: #17213a;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+}
+
+
+/* ------------------------------------------
+   BUG REPORT
+------------------------------------------ */
+
+.bug-report {
+
+    background-color: #f8fafc;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    border: 1px solid #e5e7eb;
+}
+
+
+.bug-label {
+
+    color: #687080;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+
+    margin-top: 15px;
+
+    margin-bottom: 5px;
+}
+
+
+.bug-value {
+
+    color: #17213a;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+}
+
+
+/* ------------------------------------------
+   ESTADO VACÍO
+------------------------------------------ */
+
+.empty-analysis {
+
+    text-align: center;
+
+    padding: 70px 20px;
+
+    color: #687080;
+}
+
+
+/* ------------------------------------------
+   DIVISOR
+------------------------------------------ */
+
+.action-bar {
+
+    margin-top: 28px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid #e5e7eb;
 }
 
 </style>
@@ -99,7 +310,7 @@ div.stButton > button:hover {
 
 
 # ==========================================
-# VERIFICAR REPORTE SELECCIONADO
+# VERIFICAR REPORTE
 # ==========================================
 
 if "selected_feedback" not in st.session_state:
@@ -119,33 +330,6 @@ item = st.session_state.selected_feedback
 
 
 # ==========================================
-# INFORMACIÓN DE TODOS LOS REPORTES
-# ==========================================
-
-reportes_texto = ""
-
-for reporte in ALL_FEEDBACK:
-
-    reportes_texto += f"""
-REPORTE #{reporte['id']}
-Tipo: {reporte['tipo']}
-País: {reporte['pais']}
-Urgencia: {reporte['urgencia']}
-Estado: {reporte['estado']}
-Comentario: {reporte['comentario']}
-"""
-
-    if "calificacion" in reporte:
-
-        reportes_texto += (
-            f"Calificación: "
-            f"{reporte['calificacion']}/5\n"
-        )
-
-    reportes_texto += "\n"
-
-
-# ==========================================
 # HEADER
 # ==========================================
 
@@ -156,16 +340,16 @@ if st.button("← Volver al buzón"):
 
 st.markdown(
     """
-    <div style="
-        margin-top:20px;
-        margin-bottom:10px;
-    ">
+    <div style="margin-top:15px;">
         <h1>Análisis del reporte</h1>
+
         <p style="
             color:#687080;
             font-size:17px;
+            margin-top:-8px;
         ">
-            Análisis generado con IA a partir del feedback disponible.
+            Convierte el feedback en un reporte accionable
+            para el equipo.
         </p>
     </div>
     """,
@@ -181,23 +365,15 @@ st.markdown(
     f"""
     <div class="report-original">
 
-        <div class="label">
+        <div class="report-label">
             {item['tipo']} · ID #{item['id']}
         </div>
 
-        <div style="
-            font-size:18px;
-            color:#17213a;
-            font-weight:600;
-            margin-top:8px;
-        ">
+        <div class="report-comment">
             {item['comentario']}
         </div>
 
-        <div style="
-            color:#687080;
-            margin-top:12px;
-        ">
+        <div class="report-meta">
             País: {item['pais']}
             &nbsp;&nbsp;·&nbsp;&nbsp;
             Urgencia: {item['urgencia']}
@@ -210,33 +386,86 @@ st.markdown(
 
 
 # ==========================================
+# CONSTRUIR INFORMACIÓN DE REPORTES
+# ==========================================
+
+reportes_texto = ""
+
+for reporte in ALL_FEEDBACK:
+
+    reportes_texto += f"""
+REPORTE #{reporte['id']}
+Tipo: {reporte['tipo']}
+País: {reporte['pais']}
+Urgencia: {reporte['urgencia']}
+Comentario: {reporte['comentario']}
+"""
+
+    if "calificacion" in reporte:
+
+        reportes_texto += (
+            f"Calificación: "
+            f"{reporte['calificacion']}/5\n"
+        )
+
+    reportes_texto += "\n"
+
+
+# ==========================================
 # GENERAR ANÁLISIS
 # ==========================================
 
-if st.button(
-    "✨ Analizar reporte con IA",
-    use_container_width=True
-):
+if "analysis_result" not in st.session_state:
 
-    with st.spinner(
-        "Analizando reporte y buscando relaciones..."
+    st.markdown(
+        """
+        <div class="empty-analysis">
+
+            <div style="
+                font-size:42px;
+                margin-bottom:15px;
+            ">
+                ✨
+            </div>
+
+            <h3>
+                Genera el análisis con IA
+            </h3>
+
+            <p>
+                Alegra Insight analizará este reporte,
+                identificará el problema y buscará
+                relaciones con otros casos.
+            </p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if st.button(
+        "✨ Analizar reporte con IA",
+        use_container_width=True
     ):
 
-        try:
+        with st.spinner(
+            "Analizando reporte y buscando relaciones..."
+        ):
 
-            prompt = f"""
+            try:
+
+                prompt = f"""
 Eres Alegra Insight, una herramienta interna
 para Product Managers de Alegra.
 
-Tu tarea es analizar UN reporte específico
-utilizando también el resto del feedback disponible
-para encontrar patrones y relaciones.
+Analiza UN reporte específico utilizando también
+el resto del feedback disponible.
 
 IMPORTANTE:
 
 - Basa las conclusiones únicamente en los datos proporcionados.
 - No inventes información.
-- Diferencia claramente hechos de hipótesis.
+- Diferencia hechos de hipótesis.
 - Si un dato no está disponible, escribe "Por confirmar".
 - No asumas información técnica que el reporte no menciona.
 - Puedes identificar patrones entre diferentes reportes.
@@ -244,51 +473,49 @@ IMPORTANTE:
 - Sé concreta y útil para decisiones de producto.
 - Responde en español.
 
-------------------------------------------
-REPORTE QUE DEBES ANALIZAR
-------------------------------------------
+==========================================
+REPORTE A ANALIZAR
+==========================================
 
 ID: #{item['id']}
 Tipo: {item['tipo']}
 País: {item['pais']}
 Urgencia: {item['urgencia']}
+
 Comentario:
 
 {item['comentario']}
 
-------------------------------------------
-TODOS LOS REPORTES DISPONIBLES
-------------------------------------------
+
+==========================================
+RESTO DE REPORTES
+==========================================
 
 {reportes_texto}
 
-------------------------------------------
-FORMATO DE RESPUESTA
-------------------------------------------
 
-Devuelve el análisis exactamente con estas secciones:
+==========================================
+FORMATO
+==========================================
+
+Devuelve EXACTAMENTE estas secciones:
 
 ## BUG REPORT
 
-Explica de forma clara:
-
-- Problema:
-- Comportamiento observado:
-- Impacto:
-- Severidad:
-
-Si el reporte no permite determinar alguno,
-indica "Por confirmar".
+Problema:
+Comportamiento observado:
+Impacto:
+Severidad:
 
 ## INSIGHTS
 
-Identifica qué necesidad, frustración
-o comportamiento del usuario revela este reporte.
+Explica la necesidad, frustración o comportamiento
+del usuario que revela este reporte.
 
 ## INFORMACIÓN FALTANTE
 
-Indica qué información sería necesario obtener
-para entender o reproducir mejor el problema.
+Lista la información necesaria para comprender
+o reproducir mejor el problema.
 
 ## SUPUESTOS E HIPÓTESIS
 
@@ -297,73 +524,466 @@ de los hechos confirmados.
 
 ## RELACIÓN CON OTROS REPORTES
 
-Busca otros reportes relacionados.
+Identifica reportes relacionados.
 
 Para cada relación indica:
 
-- ID del reporte relacionado.
-- Por qué está relacionado.
-- Qué patrón podría existir.
+- ID
+- Motivo de la relación
+- Patrón posible
 
-Si no encuentras relaciones claras,
-indica "No se encontraron relaciones claras".
+Si no existen relaciones claras:
+"No se encontraron relaciones claras."
 
 ## OPORTUNIDAD DE PRODUCTO
 
-Propón una oportunidad de producto basada
-únicamente en lo encontrado.
+Propón una oportunidad basada únicamente
+en los hallazgos.
 
-No propongas una solución técnica específica
-si los datos no la justifican.
+No inventes soluciones técnicas.
 """
 
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt
-            )
-
-            if response and response.text:
-
-                analysis = response.text
-
-                st.session_state.analysis_result = analysis
-
-            else:
-
-                st.error(
-                    "Gemini no devolvió un análisis."
+                response = client.models.generate_content(
+                    model=GEMINI_MODEL,
+                    contents=prompt
                 )
 
+                if response and response.text:
 
-        except Exception as e:
+                    st.session_state.analysis_result = response.text
 
-            st.error(
-                "No pudimos completar el análisis "
-                "en este momento."
-            )
+                    st.rerun()
 
-            st.caption(
-                "Intenta nuevamente en unos segundos."
-            )
+                else:
+
+                    st.error(
+                        "Gemini no devolvió un análisis."
+                    )
+
+            except Exception:
+
+                st.error(
+                    "No pudimos completar el análisis "
+                    "en este momento."
+                )
+
+                st.caption(
+                    "Intenta nuevamente en unos segundos."
+                )
+
+    st.stop()
 
 
 # ==========================================
-# MOSTRAR RESULTADO
+# PROCESAR RESULTADO
 # ==========================================
 
-if "analysis_result" in st.session_state:
+analysis = st.session_state.analysis_result
 
-    st.markdown("---")
+
+def get_section(text, section_name, next_sections):
+
+    start_marker = f"## {section_name}"
+
+    if start_marker not in text:
+        return "Por confirmar."
+
+    content = text.split(start_marker, 1)[1]
+
+    positions = []
+
+    for section in next_sections:
+
+        marker = f"## {section}"
+
+        if marker in content:
+
+            positions.append(
+                content.index(marker)
+            )
+
+    if positions:
+
+        content = content[:min(positions)]
+
+    return content.strip()
+
+
+bug_report = get_section(
+    analysis,
+    "BUG REPORT",
+    [
+        "INSIGHTS",
+        "INFORMACIÓN FALTANTE",
+        "SUPUESTOS E HIPÓTESIS",
+        "RELACIÓN CON OTROS REPORTES",
+        "OPORTUNIDAD DE PRODUCTO"
+    ]
+)
+
+insights = get_section(
+    analysis,
+    "INSIGHTS",
+    [
+        "INFORMACIÓN FALTANTE",
+        "SUPUESTOS E HIPÓTESIS",
+        "RELACIÓN CON OTROS REPORTES",
+        "OPORTUNIDAD DE PRODUCTO"
+    ]
+)
+
+info_faltante = get_section(
+    analysis,
+    "INFORMACIÓN FALTANTE",
+    [
+        "SUPUESTOS E HIPÓTESIS",
+        "RELACIÓN CON OTROS REPORTES",
+        "OPORTUNIDAD DE PRODUCTO"
+    ]
+)
+
+supuestos = get_section(
+    analysis,
+    "SUPUESTOS E HIPÓTESIS",
+    [
+        "RELACIÓN CON OTROS REPORTES",
+        "OPORTUNIDAD DE PRODUCTO"
+    ]
+)
+
+relaciones = get_section(
+    analysis,
+    "RELACIÓN CON OTROS REPORTES",
+    [
+        "OPORTUNIDAD DE PRODUCTO"
+    ]
+)
+
+oportunidad = get_section(
+    analysis,
+    "OPORTUNIDAD DE PRODUCTO",
+    []
+)
+
+
+# ==========================================
+# MOSTRAR ANÁLISIS
+# ==========================================
+
+st.markdown("---")
+
+left, right = st.columns(
+    [1.15, 1]
+)
+
+
+# ==========================================
+# IZQUIERDA — BUG REPORT
+# ==========================================
+
+with left:
 
     st.markdown(
         """
-        <div class="section-title">
-            🧠 Análisis de IA
+        <div class="analysis-main">
+
+            <div class="analysis-title">
+                🐛 Bug report
+            </div>
+
+            <div class="bug-report">
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(bug_report)
+
+    st.markdown(
+        """
+            </div>
+
         </div>
         """,
         unsafe_allow_html=True
     )
 
+
+# ==========================================
+# DERECHA — ANÁLISIS COMPLEMENTARIO
+# ==========================================
+
+with right:
+
+    # INSIGHTS
+
     st.markdown(
-        st.session_state.analysis_result
+        """
+        <div class="analysis-side">
+
+            <div class="side-title">
+                💡 Insights
+            </div>
+        """,
+        unsafe_allow_html=True
     )
+
+    st.markdown(insights)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+    # INFORMACIÓN FALTANTE
+
+    st.markdown(
+        """
+        <div class="analysis-side">
+
+            <div class="side-title">
+                🔎 Información faltante
+            </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(info_faltante)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+    # SUPUESTOS
+
+    st.markdown(
+        """
+        <div class="analysis-side">
+
+            <div class="side-title">
+                💭 Supuestos e hipótesis
+            </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(supuestos)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+    # RELACIONES
+
+    st.markdown(
+        """
+        <div class="analysis-side">
+
+            <div class="side-title">
+                🔗 Relación con otros reportes
+            </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(relaciones)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+    # OPORTUNIDAD
+
+    st.markdown(
+        """
+        <div class="analysis-side">
+
+            <div class="side-title">
+                🚀 Oportunidad de producto
+            </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(oportunidad)
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+# ==========================================
+# BARRA DE ACCIONES
+# ==========================================
+
+st.markdown(
+    """
+    <div class="action-bar">
+        <div style="
+            color:#17213a;
+            font-size:18px;
+            font-weight:700;
+            margin-bottom:15px;
+        ">
+            ¿Qué quieres hacer con este reporte?
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+action1, action2, action3, action4 = st.columns(4)
+
+
+# ==========================================
+# ENVIAR BUG REPORT
+# ==========================================
+
+with action1:
+
+    if st.button(
+        "🚀 Enviar bug report",
+        use_container_width=True
+    ):
+
+        st.success(
+            "Bug report enviado al equipo."
+        )
+
+
+# ==========================================
+# EDITAR
+# ==========================================
+
+with action2:
+
+    if st.button(
+        "✏️ Editar",
+        use_container_width=True
+    ):
+
+        st.session_state.editing_analysis = True
+
+
+# ==========================================
+# ADJUNTAR ANÁLISIS
+# ==========================================
+
+with action3:
+
+    if st.button(
+        "📎 Adjuntar análisis",
+        use_container_width=True
+    ):
+
+        st.success(
+            "Análisis adjuntado al bug report."
+        )
+
+
+# ==========================================
+# DESCARGAR
+# ==========================================
+
+with action4:
+
+    download_content = f"""
+ALEGRA INSIGHT
+REPORTE #{item['id']}
+
+TIPO:
+{item['tipo']}
+
+PAÍS:
+{item['pais']}
+
+URGENCIA:
+{item['urgencia']}
+
+
+==============================
+BUG REPORT
+==============================
+
+{bug_report}
+
+
+==============================
+INSIGHTS
+==============================
+
+{insights}
+
+
+==============================
+INFORMACIÓN FALTANTE
+==============================
+
+{info_faltante}
+
+
+==============================
+SUPUESTOS E HIPÓTESIS
+==============================
+
+{supuestos}
+
+
+==============================
+RELACIÓN CON OTROS REPORTES
+==============================
+
+{relaciones}
+
+
+==============================
+OPORTUNIDAD DE PRODUCTO
+==============================
+
+{oportunidad}
+"""
+
+    st.download_button(
+        "⬇️ Descargar",
+        data=download_content,
+        file_name=f"alegra_reporte_{item['id']}.txt",
+        mime="text/plain",
+        use_container_width=True
+    )
+
+
+# ==========================================
+# MODO EDICIÓN
+# ==========================================
+
+if st.session_state.get("editing_analysis", False):
+
+    st.markdown("---")
+
+    st.subheader("Editar análisis")
+
+    edited_analysis = st.text_area(
+        "Puedes modificar el análisis antes de enviarlo.",
+        value=st.session_state.analysis_result,
+        height=400
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        if st.button(
+            "Guardar cambios",
+            type="primary",
+            use_container_width=True
+        ):
+
+            st.session_state.analysis_result = edited_analysis
+
+            st.session_state.editing_analysis = False
+
+            st.rerun()
+
+    with col2:
+
+        if st.button(
+            "Cancelar",
+            use_container_width=True
+        ):
+
+            st.session_state.editing_analysis = False
+
+            st.rerun()
