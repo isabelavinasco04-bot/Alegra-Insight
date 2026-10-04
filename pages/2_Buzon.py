@@ -50,26 +50,6 @@ h1 {
 """, unsafe_allow_html=True)
 
 
-# ==========================================
-# SIDEBAR
-# ==========================================
-
-with st.sidebar:
-
-    st.markdown("## 🌿 alegra")
-
-    st.markdown("---")
-
-    st.markdown("⌂  Inicio")
-    st.markdown("▣  Buzón")
-    st.markdown("♙  Subir sesión")
-    st.markdown("♧  Equipos")
-
-    st.markdown("---")
-
-    st.caption("Sofía")
-    st.caption("Product Manager")
-
 
 # ==========================================
 # HEADER
