@@ -373,7 +373,7 @@ indica "Por confirmar".
 
 
 # ==========================================
-# CONTENIDO DE LAS PESTAÑAS
+# CONTENIDO DE LAS PESTAÑASs
 # ==========================================
 
 with tab1:
@@ -408,7 +408,3 @@ with tab3:
         tickets,
         "tickets"
     )
-        if x["tipo"] == "Ticket"
-    ]
-
-    show_feedback(tickets)
