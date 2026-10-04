@@ -206,6 +206,36 @@ div.stButton > button:hover {
 }
 
 
+/* Switch apagado */
+
+[data-testid="stToggle"] div[role="switch"] {
+    background-color: #dfe3e8 !important;
+    border: 1px solid #dfe3e8 !important;
+}
+
+
+/* Switch encendido */
+
+[data-testid="stToggle"] div[role="switch"][aria-checked="true"] {
+    background: linear-gradient(
+        135deg,
+        #2fb7b5 0%,
+        #17213a 100%
+    ) !important;
+
+    border-color: transparent !important;
+}
+
+
+/* Círculo del switch */
+
+[data-testid="stToggle"] div[role="switch"]::before {
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 1px 4px rgba(23, 33, 58, 0.18) !important;
+}
+
+
 /* ==========================================
    DIVISOR
    ========================================== */
