@@ -66,14 +66,14 @@ h1 {
 
 with st.sidebar:
 
-    st.markdown("## 🌿 alegra")
+    st.markdown("## Alegra")
 
     st.markdown("---")
 
-    st.page_link("app.py", label="⌂  Inicio")
-    st.page_link("app.py", label="▣  Buzón")
-    st.page_link("app.py", label="♙  Subir sesión")
-    st.page_link("app.py", label="♧  Equipos")
+    st.markdown("⌂  Inicio")
+    st.markdown("▣  Buzón")
+    st.markdown("♙  Subir sesión")
+    st.markdown("♧  Equipos")
 
     st.markdown("---")
 
