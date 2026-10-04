@@ -1,4 +1,29 @@
 # ==========================================
+# MIEMBROS DEL EQUIPO
+# ==========================================
+
+TEAM_MEMBERS = [
+    {
+        "id": 1,
+        "nombre": "Juan",
+        "rol": "Desarrollador",
+        "estado": "Disponible"
+    },
+    {
+        "id": 2,
+        "nombre": "Carlos",
+        "rol": "Desarrollador",
+        "estado": "Ocupado"
+    },
+    {
+        "id": 3,
+        "nombre": "Sara",
+        "rol": "Diseñadora",
+        "estado": "Disponible"
+    }
+]
+
+# ==========================================
 # DATOS DEL RETO ALEGRA
 # ==========================================
 
@@ -165,28 +190,3 @@ TICKETS = [
 # Todos los elementos del buzón
 ALL_FEEDBACK = REVIEWS + TICKETS
 
-
-# ==========================================
-# MIEMBROS DEL EQUIPO
-# ==========================================
-
-TEAM_MEMBERS = [
-    {
-        "id": 1,
-        "nombre": "Juan",
-        "rol": "Desarrollador",
-        "estado": "Disponible"
-    },
-    {
-        "id": 2,
-        "nombre": "Carlos",
-        "rol": "Desarrollador",
-        "estado": "Ocupado"
-    },
-    {
-        "id": 3,
-        "nombre": "Sara",
-        "rol": "Diseñadora",
-        "estado": "Disponible"
-    }
-]
