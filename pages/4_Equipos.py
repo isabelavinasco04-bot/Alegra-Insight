@@ -81,6 +81,9 @@ TEAM_MEMBERS = [
     }
 ]
 
+if "team_members" not in st.session_state:
+    st.session_state.team_members = TEAM_MEMBERS
+
 
 # ==========================================
 # CONFIGURACIÓN
