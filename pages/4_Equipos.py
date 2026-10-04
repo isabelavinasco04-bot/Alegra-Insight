@@ -548,36 +548,38 @@ def mostrar_miembro(miembro):
                 else:
                     status_class = "badge-resolved"
 
-                st.markdown(
-                    f"""
-                    <div class="report-row">
-
-                        <div class="report-title">
-                            {reporte["titulo"]}
+               st.markdown(
+                    textwrap.dedent(
+                        f"""
+                        <div class="report-row">
+                
+                            <div class="report-title">
+                                {reporte["titulo"]}
+                            </div>
+                
+                            <div class="report-meta">
+                                {reporte["pais"]}
+                            </div>
+                
+                            <div style="
+                                margin-top:8px;
+                                display:flex;
+                                gap:6px;
+                            ">
+                
+                                <span class="badge {urgency_class}">
+                                    {reporte["urgencia"]}
+                                </span>
+                
+                                <span class="badge {status_class}">
+                                    {reporte["estado"]}
+                                </span>
+                
+                            </div>
+                
                         </div>
-
-                        <div class="report-meta">
-                            {reporte["pais"]}
-                        </div>
-
-                        <div style="
-                            margin-top:8px;
-                            display:flex;
-                            gap:6px;
-                        ">
-
-                            <span class="badge {urgency_class}">
-                                {reporte["urgencia"]}
-                            </span>
-
-                            <span class="badge {status_class}">
-                                {reporte["estado"]}
-                            </span>
-
-                        </div>
-
-                    </div>
-                    """,
+                        """
+                    ),
                     unsafe_allow_html=True
                 )
 
