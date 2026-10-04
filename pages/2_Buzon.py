@@ -391,7 +391,3 @@ for item in filtered_data:
                     "pages/5_Analisis.py"
                 )
 
-    show_feedback(
-        tickets,
-        "tickets"
-    )
