@@ -7,6 +7,7 @@ analisis_page = st.Page(
     title="Análisis"
 )
 
+
 # ==========================================
 # CONEXIÓN CON GEMINI
 # ==========================================
@@ -24,10 +25,6 @@ GEMINI_MODEL = "gemini-3.8-flash"
 
 st.markdown("""
 <style>
-
-/* ==========================================
-   BOTONES ALEGRA
-   ========================================== */
 
 div.stButton > button {
     background-color: #2fb7b5;
@@ -81,6 +78,25 @@ h1 {
 
 
 # ==========================================
+# SESIONES PROCESADAS
+# ==========================================
+
+if "sessions" not in st.session_state:
+    st.session_state.sessions = []
+
+
+# ==========================================
+# CREAR BUZÓN COMPLETO
+# ==========================================
+
+all_items = ALL_FEEDBACK.copy()
+
+all_items.extend(
+    st.session_state.sessions
+)
+
+
+# ==========================================
 # HEADER
 # ==========================================
 
@@ -91,8 +107,10 @@ with header_col1:
     st.title("Buzón de usuarios")
 
     st.caption(
-        "Todos los comentarios, tickets y feedback organizados para encontrar oportunidades."
+        "Todos los comentarios, tickets y sesiones organizados "
+        "para encontrar oportunidades."
     )
+
 
 with header_col2:
 
@@ -103,6 +121,7 @@ with header_col2:
         use_container_width=True,
         type="primary"
     ):
+
         st.session_state.show_add_report = True
 
 
@@ -131,7 +150,11 @@ if st.session_state.show_add_report:
 
             tipo = st.selectbox(
                 "Tipo",
-                ["Reseña", "Ticket", "Sesión con cliente"]
+                [
+                    "Reseña",
+                    "Ticket",
+                    "Sesión con cliente"
+                ]
             )
 
         with col2:
@@ -150,7 +173,11 @@ if st.session_state.show_add_report:
 
             urgencia = st.selectbox(
                 "Urgencia",
-                ["Alta", "Media", "Baja"]
+                [
+                    "Alta",
+                    "Media",
+                    "Baja"
+                ]
             )
 
         col1, col2 = st.columns(2)
@@ -169,18 +196,22 @@ if st.session_state.show_add_report:
                         [x["id"] for x in ALL_FEEDBACK]
                     ) + 1
 
-                    ALL_FEEDBACK.append({
-                        "id": nuevo_id,
-                        "tipo": tipo,
-                        "pais": pais,
-                        "urgencia": urgencia,
-                        "estado": "Sin analizar",
-                        "comentario": comentario
-                    })
+                    ALL_FEEDBACK.append(
+                        {
+                            "id": nuevo_id,
+                            "tipo": tipo,
+                            "pais": pais,
+                            "urgencia": urgencia,
+                            "estado": "Sin analizar",
+                            "comentario": comentario
+                        }
+                    )
 
                     st.session_state.show_add_report = False
 
-                    st.success("Reporte agregado correctamente.")
+                    st.success(
+                        "Reporte agregado correctamente."
+                    )
 
                     st.rerun()
 
@@ -215,37 +246,40 @@ with col1:
 
     st.metric(
         "Feedback total",
-        len(ALL_FEEDBACK)
+        len(all_items)
     )
+
 
 with col2:
 
     st.metric(
         "Reseñas",
         len([
-            x for x in ALL_FEEDBACK
+            x for x in all_items
             if x["tipo"] == "Reseña"
         ])
     )
+
 
 with col3:
 
     st.metric(
         "Tickets",
         len([
-            x for x in ALL_FEEDBACK
+            x for x in all_items
             if x["tipo"] == "Ticket"
         ])
     )
 
+
 with col4:
 
     st.metric(
-        "Países",
-        len(set(
-            x["pais"]
-            for x in ALL_FEEDBACK
-        ))
+        "Sesiones",
+        len([
+            x for x in all_items
+            if x["tipo"] == "Sesión con cliente"
+        ])
     )
 
 
@@ -256,7 +290,10 @@ st.markdown("---")
 # FILTROS
 # ==========================================
 
-col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+col1, col2, col3, col4 = st.columns(
+    [2, 1, 1, 1]
+)
+
 
 with col1:
 
@@ -265,13 +302,16 @@ with col1:
         placeholder="Buscar comentario..."
     )
 
+
 with col2:
 
     countries = sorted(
-        list(set(
-            x["pais"]
-            for x in ALL_FEEDBACK
-        ))
+        list(
+            set(
+                x["pais"]
+                for x in all_items
+            )
+        )
     )
 
     country_filter = st.selectbox(
@@ -279,18 +319,30 @@ with col2:
         ["Todos"] + countries
     )
 
+
 with col3:
 
     urgency_filter = st.selectbox(
         "Urgencia",
-        ["Todas", "Alta", "Media", "Baja"]
+        [
+            "Todas",
+            "Alta",
+            "Media",
+            "Baja"
+        ]
     )
+
 
 with col4:
 
     type_filter = st.selectbox(
         "Tipo",
-        ["Todos", "Reseña", "Ticket", "Sesión con cliente"]
+        [
+            "Todos",
+            "Reseña",
+            "Ticket",
+            "Sesión con cliente"
+        ]
     )
 
 
@@ -298,21 +350,24 @@ with col4:
 # FILTRAR DATOS
 # ==========================================
 
-filtered_data = ALL_FEEDBACK.copy()
+filtered_data = all_items.copy()
 
 
 if search:
 
     filtered_data = [
-        x for x in filtered_data
-        if search.lower() in x["comentario"].lower()
+        x
+        for x in filtered_data
+        if search.lower()
+        in x["comentario"].lower()
     ]
 
 
 if country_filter != "Todos":
 
     filtered_data = [
-        x for x in filtered_data
+        x
+        for x in filtered_data
         if x["pais"] == country_filter
     ]
 
@@ -320,7 +375,8 @@ if country_filter != "Todos":
 if urgency_filter != "Todas":
 
     filtered_data = [
-        x for x in filtered_data
+        x
+        for x in filtered_data
         if x["urgencia"] == urgency_filter
     ]
 
@@ -328,7 +384,8 @@ if urgency_filter != "Todas":
 if type_filter != "Todos":
 
     filtered_data = [
-        x for x in filtered_data
+        x
+        for x in filtered_data
         if x["tipo"] == type_filter
     ]
 
@@ -354,21 +411,29 @@ for item in filtered_data:
             [0.5, 4.5, 1.2, 1.5]
         )
 
-        # ------------------------------
+
+        # ======================================
         # ICONO
-        # ------------------------------
+        # ======================================
 
         with col1:
 
             if item["tipo"] == "Ticket":
+
                 st.write("🎫")
+
+            elif item["tipo"] == "Sesión con cliente":
+
+                st.write("🎙️")
+
             else:
+
                 st.write("💬")
 
 
-        # ------------------------------
+        # ======================================
         # COMENTARIO
-        # ------------------------------
+        # ======================================
 
         with col2:
 
@@ -380,14 +445,22 @@ for item in filtered_data:
                 f"{item['tipo']} · ID #{item['id']}"
             )
 
+            if item["tipo"] == "Sesión con cliente":
 
-        # ------------------------------
-        # PAÍS
-        # ------------------------------
+                st.caption(
+                    f"🎧 Archivo: {item.get('archivo', 'Sesión')}"
+                )
+
+
+        # ======================================
+        # PAÍS / URGENCIA
+        # ======================================
 
         with col3:
 
-            st.write(item["pais"])
+            st.write(
+                item["pais"]
+            )
 
             if item["urgencia"] == "Alta":
 
@@ -397,14 +470,18 @@ for item in filtered_data:
 
                 st.warning("🟡 Media")
 
-            else:
+            elif item["urgencia"] == "Baja":
 
                 st.success("🟢 Baja")
 
+            else:
 
-        # ------------------------------
+                st.info("⚪ Por confirmar")
+
+
+        # ======================================
         # BOTÓN IA
-        # ------------------------------
+        # ======================================
 
         with col4:
 
@@ -416,5 +493,6 @@ for item in filtered_data:
 
                 st.session_state.selected_feedback = item
 
-                st.switch_page(analisis_page)
-
+                st.switch_page(
+                    analisis_page
+                )
