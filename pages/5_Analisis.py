@@ -1254,8 +1254,8 @@ with pdf_col:
 
 if st.session_state.show_assignment:
 
-    st.markdown(
-        """
+            st.markdown(
+            """
         <div style="
             border:1px solid #dce2e8;
             border-radius:12px;
@@ -1264,27 +1264,27 @@ if st.session_state.show_assignment:
             margin-bottom:16px;
             background:white;
         ">
-
+        
             <div style="
                 color:#17213a;
                 font-size:24px;
                 font-weight:700;
                 margin-bottom:8px;
-            ">
-                👥 ¿A quién deseas asignar este bug report?
+        ">
+            👥 ¿A quién deseas asignar este bug report?
             </div>
-
+        
             <div style="
                 color:#687080;
                 font-size:14px;
-            ">
-                Selecciona al miembro del equipo que se encargará de revisar este problema.
+        ">
+            Selecciona al miembro del equipo que se encargará de revisar este problema.
             </div>
-
+        
         </div>
         """,
-        unsafe_allow_html=True
-    )
+            unsafe_allow_html=True
+        )
 
 
     # ==========================================
