@@ -123,23 +123,6 @@ with col4:
 
 
 st.markdown("---")
-
-
-# ==========================================
-# PESTAÑAS
-# ==========================================
-
-tab1, tab2, tab3 = st.tabs([
-    "Todos",
-    "Reseñas",
-    "Tickets"
-])
-
-
-if "tab_selection" not in st.session_state:
-    st.session_state.tab_selection = "Todos"
-
-
 # ==========================================
 # FILTROS
 # ==========================================
@@ -180,6 +163,21 @@ with col4:
         "Estado",
         ["Todos", "Sin analizar", "Analizado"]
     )
+
+# ==========================================
+# PESTAÑAS
+# ==========================================
+
+tab1, tab2, tab3 = st.tabs([
+    "Todos",
+    "Reseñas",
+    "Tickets"
+])
+
+
+if "tab_selection" not in st.session_state:
+    st.session_state.tab_selection = "Todos"
+
 
 
 # ==========================================
