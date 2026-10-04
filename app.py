@@ -292,18 +292,22 @@ for item in filtered_data:
         # ANALIZAR
         # ----------------------------------
 
-        if st.button(
-            "Analizar con IA",
-            key=f"analizar_{item['id']}"
-        ):
+       # ----------------------------------
+# ANALIZAR CON IA
+# ----------------------------------
 
-            with st.spinner(
-                "Analizando comentario..."
-            ):
+if st.button(
+    "Analizar con IA",
+    key=f"analizar_{item['id']}"
+):
 
-                response = client.models.generate_content(
-                    model="gemini-3.8-flash",
-                    contents=f"""
+    with st.spinner("Analizando comentario..."):
+
+        try:
+
+            response = client.models.generate_content(
+                model="gemini-3.8-flash",
+                contents=f"""
 Eres un Product Manager de Alegra.
 
 Analiza este comentario de usuario:
@@ -328,9 +332,35 @@ No inventes información.
 Diferencia claramente los hechos de las hipótesis.
 Si algo no está disponible, indica "Por confirmar".
 """
+            )
+
+            # Mostrar resultado solamente si Gemini respondió
+            if response and response.text:
+
+                st.success("Análisis completado")
+
+                st.markdown("### Análisis de IA")
+
+                st.write(response.text)
+
+            else:
+
+                st.warning(
+                    "Gemini no devolvió contenido. Intenta nuevamente."
                 )
 
-            st.info(response.text)
+        except Exception as e:
+
+            st.error(
+                "No pudimos analizar este comentario en este momento."
+            )
+
+            st.caption(
+                "Intenta nuevamente en unos segundos."
+            )
+
+            # Información para depuración
+            st.code(str(e))
 
         st.subheader("Análisis de IA")
 
