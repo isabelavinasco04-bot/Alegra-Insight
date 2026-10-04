@@ -174,65 +174,6 @@ st.markdown(
 
 if "quick_question" not in st.session_state:
     st.session_state.quick_question = None
-
-
-# ==========================================
-# PREGUNTAS RÁPIDAS
-# ==========================================
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button(
-        "💬 ¿Qué problemas se están reportando?",
-        use_container_width=True
-    ):
-        st.session_state.quick_question = (
-            "¿Qué problemas se están reportando? "
-            "Analiza todos los reportes disponibles, identifica los problemas "
-            "más frecuentes y resume los principales hallazgos."
-        )
-
-
-with col2:
-    if st.button(
-        "📄 Muéstrame los reportes de facturación",
-        use_container_width=True
-    ):
-        st.session_state.quick_question = (
-            "Muéstrame los reportes relacionados con problemas de facturación. "
-            "Indica qué está pasando, en qué países ocurre y qué tan urgente es."
-        )
-
-
-with col3:
-    if st.button(
-        "👥 ¿Qué está trabajando el equipo?",
-        use_container_width=True
-    ):
-        st.session_state.quick_question = (
-            "A partir de todos los reportes disponibles, "
-            "¿qué problemas debería estar trabajando prioritariamente el equipo? "
-            "Agrupa los problemas relacionados y explica por qué deberían ser prioridad."
-        )
-
-
-# ==========================================
-# BUSCADOR
-# ==========================================
-
-question = st.text_input(
-    "",
-    value=st.session_state.quick_question or "",
-    placeholder="Pregunta a la IA sobre algún reporte...",
-    label_visibility="collapsed"
-)
-
-
-# Después de mostrar la pregunta rápida,
-# la limpiamos para que no se quede pegada.
-if st.session_state.quick_question is not None:
-    st.session_state.quick_question = None
 # ==========================================
 # ACCIONES PRINCIPALES
 # ==========================================
