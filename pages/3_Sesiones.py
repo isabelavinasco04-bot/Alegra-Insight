@@ -81,8 +81,11 @@ if archivo is not None:
                 if archivo.type and archivo.type.startswith("audio"):
 
                     archivo_subido = client.files.upload(
-                        file=archivo
-                    )
+                        file=archivo,
+                        config={
+                            "mime_type": archivo.type
+                                }
+                            )
 
                     prompt = """
 Analiza esta sesión de usuario de Alegra.
