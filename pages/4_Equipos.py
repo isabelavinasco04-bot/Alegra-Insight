@@ -280,9 +280,9 @@ if st.session_state["show_member_form"]:
 
                 if nuevo_nombre.strip():
 
-                    nuevo_id = len(TEAM_MEMBERS) + 1
+                    nuevo_id = len(st.session_state.team_members) + 1
 
-                    TEAM_MEMBERS.append(
+                    st.session_state.team_members.append(
                         {
                             "id": nuevo_id,
                             "nombre": nuevo_nombre.strip(),
@@ -327,7 +327,7 @@ st.divider()
 
 todos_los_reportes = []
 
-for miembro in TEAM_MEMBERS:
+for miembro in st.session_state.team_members:
 
     for reporte in miembro["reportes"]:
 
@@ -571,7 +571,7 @@ with tab_general:
 
     columns = st.columns(2)
 
-    for index, miembro in enumerate(TEAM_MEMBERS):
+    for index, miembro in enumerate(st.session_state.team_members):
 
         with columns[index % 2]:
 
@@ -586,7 +586,7 @@ with tab_dev:
 
     desarrolladores = [
         miembro
-        for miembro in TEAM_MEMBERS
+        for miembro in st.session_state.team_members
         if miembro["rol"] == "Desarrollador"
     ]
 
@@ -616,7 +616,7 @@ with tab_design:
 
     disenadores = [
         miembro
-        for miembro in TEAM_MEMBERS
+        for miembro in st.session_state.team_members
         if miembro["rol"] == "Diseñadora"
     ]
 
