@@ -100,7 +100,9 @@ Comentario: {reporte['comentario']}
 """
 
     if "calificacion" in reporte:
-        reportes_texto += f"Calificación: {reporte['calificacion']}/5\n"
+        reportes_texto += (
+            f"Calificación: {reporte['calificacion']}/5\n"
+        )
 
     reportes_texto += "\n"
 
@@ -119,6 +121,7 @@ Tu función es ayudar a Sofía, Product Manager, a entender los problemas,
 necesidades y patrones encontrados en los comentarios de usuarios.
 
 IMPORTANTE:
+
 - Basa tus respuestas únicamente en los reportes proporcionados.
 - No inventes datos.
 - No inventes usuarios, problemas o estadísticas que no aparezcan
@@ -145,7 +148,6 @@ PREGUNTA DE SOFÍA:
 Responde la pregunta utilizando únicamente la información anterior.
 """
 
-
     response = client.models.generate_content(
         model="gemini-3.8-flash",
         contents=prompt
@@ -168,29 +170,83 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ==========================================
-# PREGUNTA A LA IA
-# ==========================================
-
-if "quick_question" not in st.session_state:
-    st.session_state.quick_question = None
 
 # ==========================================
-# BUSCADOR
+# BUSCADOR + BOTÓN
 # ==========================================
 
-question = st.text_input(
-    "",
-    value=st.session_state.quick_question or "",
-    placeholder="Pregunta a la IA sobre algún reporte...",
-    label_visibility="collapsed"
-)
+col_search, col_button = st.columns([5, 1])
+
+with col_search:
+
+    question = st.text_input(
+        "",
+        placeholder="Pregunta a la IA sobre algún reporte...",
+        label_visibility="collapsed"
+    )
 
 
-# Después de mostrar la pregunta rápida,
-# la limpiamos para que no se quede pegada.
-if st.session_state.quick_question is not None:
-    st.session_state.quick_question = None
+with col_button:
+
+    buscar = st.button(
+        "Buscar →",
+        use_container_width=True
+    )
+
+
+# ==========================================
+# RESPUESTA DE LA IA
+# ==========================================
+
+if buscar:
+
+    if not question.strip():
+
+        st.warning(
+            "Escribe una pregunta para poder analizar los reportes."
+        )
+
+    else:
+
+        with st.spinner("Analizando los reportes..."):
+
+            try:
+
+                respuesta = preguntar_a_ia(question)
+
+                st.markdown(
+                    """
+                    <div style="
+                        margin-top: 25px;
+                        padding: 24px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 16px;
+                        background-color: #ffffff;
+                    ">
+                        <h3 style="
+                            color: #17213a;
+                            margin-bottom: 15px;
+                        ">
+                            Alegra Insight
+                        </h3>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+                st.markdown(respuesta)
+
+            except Exception as e:
+
+                st.error(
+                    "No pude completar el análisis en este momento."
+                )
+
+                st.caption(
+                    f"Detalle técnico: {e}"
+                )
+
+
 # ==========================================
 # ACCIONES PRINCIPALES
 # ==========================================
@@ -199,6 +255,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
+
+# ==========================================
+# INGRESAR REPORTE
+# ==========================================
 
 with col1:
 
@@ -224,6 +284,10 @@ with col1:
 
         st.switch_page("pages/2_Buzon.py")
 
+
+# ==========================================
+# SUBIR SESIÓN
+# ==========================================
 
 with col2:
 
