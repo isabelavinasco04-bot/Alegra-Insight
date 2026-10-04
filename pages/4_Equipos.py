@@ -1,6 +1,5 @@
 import streamlit as st
-import textwrap
-from data import ALL_FEEDBACK
+from data import TEAM_MEMBERS
 
 
 # ==========================================
@@ -15,33 +14,7 @@ st.set_page_config(
 
 
 # ==========================================
-# MIEMBROS DEL EQUIPO
-# ==========================================
-
-TEAM_MEMBERS = [
-    {
-        "id": 1,
-        "nombre": "Juan",
-        "rol": "Desarrollador",
-        "estado": "Disponible"
-    },
-    {
-        "id": 2,
-        "nombre": "Carlos",
-        "rol": "Desarrollador",
-        "estado": "Ocupado"
-    },
-    {
-        "id": 3,
-        "nombre": "Sara",
-        "rol": "Diseñadora",
-        "estado": "Disponible"
-    }
-]
-
-
-# ==========================================
-# REPORTES DE EJEMPLO
+# REPORTES ASIGNADOS AL EQUIPO
 # ==========================================
 
 TEAM_REPORTS = [
@@ -56,7 +29,7 @@ TEAM_REPORTS = [
     {
         "id": 2,
         "miembro_id": 1,
-        "titulo": "La app se cierra al abrir reportes",
+        "titulo": "La app se cierra al abrir Reportes",
         "urgencia": "Media",
         "estado": "Pendiente",
         "pais": "Colombia"
@@ -64,7 +37,7 @@ TEAM_REPORTS = [
     {
         "id": 3,
         "miembro_id": 1,
-        "titulo": "Problema con impresión",
+        "titulo": "Problema con impresión desde celular",
         "urgencia": "Baja",
         "estado": "Resuelto",
         "pais": "Colombia"
@@ -73,15 +46,15 @@ TEAM_REPORTS = [
         "id": 4,
         "miembro_id": 2,
         "titulo": "Subir e.firma desde el celular",
-        "urgencia": "Alta",
+        "urgencia": "Media",
         "estado": "En progreso",
         "pais": "México"
     },
     {
         "id": 5,
         "miembro_id": 2,
-        "titulo": "Pantalla en blanco al abrir facturas",
-        "urgencia": "Media",
+        "titulo": "Pantalla blanca después de actualizar",
+        "urgencia": "Alta",
         "estado": "Pendiente",
         "pais": "Colombia"
     },
@@ -96,10 +69,10 @@ TEAM_REPORTS = [
     {
         "id": 7,
         "miembro_id": 3,
-        "titulo": "Agregar descuento en la factura",
+        "titulo": "Agregar descuento por línea",
         "urgencia": "Media",
         "estado": "En revisión",
-        "pais": "México"
+        "pais": "España"
     }
 ]
 
@@ -110,190 +83,90 @@ TEAM_REPORTS = [
 
 st.markdown(
     """
-<style>
+    <style>
 
-.stApp {
-    background-color: #ffffff;
-}
+    .stApp {
+        background-color: #ffffff;
+    }
 
-.block-container {
-    padding-top: 2rem;
-    padding-left: 3.5rem;
-    padding-right: 3.5rem;
-    padding-bottom: 3rem;
-}
+    .block-container {
+        padding-top: 2rem;
+        padding-left: 3.5rem;
+        padding-right: 3.5rem;
+        padding-bottom: 3rem;
+    }
 
-h1, h2, h3 {
-    color: #17213a;
-}
+    h1, h2, h3 {
+        color: #17213a;
+    }
 
-.page-subtitle {
-    color: #687080;
-    font-size: 16px;
-    margin-top: -10px;
-    margin-bottom: 25px;
-}
+    .page-subtitle {
+        color: #687080;
+        font-size: 16px;
+        margin-top: -10px;
+        margin-bottom: 25px;
+    }
 
+    /* Métricas */
 
-/* ==========================================
-   MEMBER CARDS
-   ========================================== */
+    [data-testid="stMetric"] {
+        background-color: #f8fafb;
+        border: 1px solid #e3e7ed;
+        border-radius: 14px;
+        padding: 16px;
+    }
 
-.member-card {
-    background: #ffffff;
-    border: 1px solid #e3e7ed;
-    border-radius: 16px;
-    padding: 22px;
-    margin-bottom: 18px;
-    box-shadow: 0 2px 8px rgba(23, 33, 58, 0.03);
-}
+    [data-testid="stMetricLabel"] {
+        color: #687080;
+    }
 
-.member-card:hover {
-    border-color: #2fb7b5;
-    box-shadow: 0 5px 18px rgba(23, 33, 58, 0.07);
-}
+    [data-testid="stMetricValue"] {
+        color: #17213a;
+    }
 
+    /* Botones */
 
-/* ==========================================
-   AVATAR
-   ========================================== */
+    div.stButton > button {
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
 
-.avatar {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    background: linear-gradient(
-        135deg,
-        #2fb7b5,
-        #17213a
-    );
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 17px;
-    flex-shrink: 0;
-}
+    div.stButton > button[kind="primary"] {
+        background: linear-gradient(
+            135deg,
+            #2fb7b5,
+            #17213a
+        );
+        border: none;
+        color: white;
+    }
 
+    div.stButton > button[kind="primary"]:hover {
+        opacity: 0.9;
+    }
 
-/* ==========================================
-   REPORT ROW
-   ========================================== */
+    /* Tabs */
 
-.report-row {
-    background: #f8fafb;
-    border: 1px solid #e8edf2;
-    border-radius: 10px;
-    padding: 13px 15px;
-    margin-top: 10px;
-}
+    button[data-baseweb="tab"] {
+        color: #687080;
+        font-weight: 600;
+    }
 
-.report-title {
-    color: #17213a;
-    font-weight: 600;
-    font-size: 14px;
-}
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #2fb7b5;
+    }
 
-.report-meta {
-    color: #687080;
-    font-size: 12px;
-    margin-top: 4px;
-}
+    /* Expander */
 
+    [data-testid="stExpander"] {
+        border: 1px solid #e3e7ed;
+        border-radius: 14px;
+        background: white;
+    }
 
-/* ==========================================
-   BADGES
-   ========================================== */
-
-.badge {
-    display: inline-block;
-    padding: 5px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.badge-high {
-    background: #fde7e7;
-    color: #c03939;
-}
-
-.badge-medium {
-    background: #fff2d6;
-    color: #a56a00;
-}
-
-.badge-low {
-    background: #dff6f4;
-    color: #168d89;
-}
-
-.badge-progress {
-    background: #e3f3f4;
-    color: #168d89;
-}
-
-.badge-pending {
-    background: #f0f2f5;
-    color: #687080;
-}
-
-.badge-review {
-    background: #eee9ff;
-    color: #7056b8;
-}
-
-.badge-resolved {
-    background: #e1f5e9;
-    color: #25804c;
-}
-
-
-/* ==========================================
-   BUTTONS
-   ========================================== */
-
-div.stButton > button {
-    background-color: #2fb7b5;
-    color: white;
-    border: 1px solid #2fb7b5;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-div.stButton > button:hover {
-    background-color: #17213a;
-    border-color: #17213a;
-    color: white;
-}
-
-
-/* ==========================================
-   TABS
-   ========================================== */
-
-button[data-baseweb="tab"] {
-    color: #687080;
-    font-weight: 600;
-}
-
-button[data-baseweb="tab"][aria-selected="true"] {
-    color: #2fb7b5;
-}
-
-
-/* ==========================================
-   DIVIDER
-   ========================================== */
-
-hr {
-    border-color: #e5e7eb;
-}
-
-</style>
-""",
+    </style>
+    """,
     unsafe_allow_html=True
 )
 
@@ -305,6 +178,7 @@ hr {
 header_col1, header_col2 = st.columns([5, 1])
 
 with header_col1:
+
     st.title("Equipos")
 
     st.markdown(
@@ -314,43 +188,47 @@ with header_col1:
         unsafe_allow_html=True
     )
 
+
 with header_col2:
+
     if st.button(
-        "＋ Agregar nuevo miembro",
-        use_container_width=True,
-        type="primary"
+        "＋ Agregar miembro",
+        type="primary",
+        use_container_width=True
     ):
-        st.session_state.show_member_form = True
+        st.session_state["show_member_form"] = True
 
 
 # ==========================================
-# FORMULARIO NUEVO MIEMBRO
+# FORMULARIO AGREGAR MIEMBRO
 # ==========================================
 
 if "show_member_form" not in st.session_state:
-    st.session_state.show_member_form = False
+    st.session_state["show_member_form"] = False
 
 
-if st.session_state.show_member_form:
+if st.session_state["show_member_form"]:
 
     with st.container(border=True):
 
-        st.subheader("＋ Nuevo miembro")
+        st.subheader("Nuevo miembro")
 
         col1, col2 = st.columns(2)
 
         with col1:
-            nombre = st.text_input(
+
+            nuevo_nombre = st.text_input(
                 "Nombre",
                 placeholder="Ej. Laura"
             )
 
         with col2:
-            rol = st.selectbox(
+
+            nuevo_rol = st.selectbox(
                 "Rol",
                 [
                     "Desarrollador",
-                    "Diseñador"
+                    "Diseñadora"
                 ]
             )
 
@@ -364,19 +242,18 @@ if st.session_state.show_member_form:
                 use_container_width=True
             ):
 
-                if nombre.strip():
+                if nuevo_nombre.strip():
 
                     st.success(
-                        f"{nombre} fue agregado al equipo."
+                        f"{nuevo_nombre} fue agregado al equipo."
                     )
 
-                    st.session_state.show_member_form = False
-                    st.rerun()
+                    st.session_state["show_member_form"] = False
 
                 else:
 
                     st.warning(
-                        "Escribe un nombre."
+                        "Escribe el nombre del nuevo miembro."
                     )
 
         with col2:
@@ -386,54 +263,66 @@ if st.session_state.show_member_form:
                 use_container_width=True
             ):
 
-                st.session_state.show_member_form = False
+                st.session_state["show_member_form"] = False
                 st.rerun()
 
 
-st.markdown("---")
+st.divider()
 
 
 # ==========================================
 # MÉTRICAS
 # ==========================================
 
-total_progress = len([
-    x for x in TEAM_REPORTS
-    if x["estado"] == "En progreso"
-])
+total_progress = sum(
+    1 for reporte in TEAM_REPORTS
+    if reporte["estado"] == "En progreso"
+)
 
-total_resolved = len([
-    x for x in TEAM_REPORTS
-    if x["estado"] == "Resuelto"
-])
+total_resolved = sum(
+    1 for reporte in TEAM_REPORTS
+    if reporte["estado"] == "Resuelto"
+)
 
-total_pending = len([
-    x for x in TEAM_REPORTS
-    if x["estado"] == "Pendiente"
-])
+total_pending = sum(
+    1 for reporte in TEAM_REPORTS
+    if reporte["estado"] == "Pendiente"
+)
 
-total_review = len([
-    x for x in TEAM_REPORTS
-    if x["estado"] == "En revisión"
-])
+total_review = sum(
+    1 for reporte in TEAM_REPORTS
+    if reporte["estado"] == "En revisión"
+)
 
 
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric("En progreso", total_progress)
+    st.metric(
+        "En progreso",
+        total_progress
+    )
 
 with col2:
-    st.metric("Resueltos", total_resolved)
+    st.metric(
+        "Resueltos",
+        total_resolved
+    )
 
 with col3:
-    st.metric("Pendientes", total_pending)
+    st.metric(
+        "Pendientes",
+        total_pending
+    )
 
 with col4:
-    st.metric("Necesitan revisión", total_review)
+    st.metric(
+        "Necesitan revisión",
+        total_review
+    )
 
 
-st.markdown("---")
+st.divider()
 
 
 # ==========================================
@@ -450,153 +339,155 @@ tab_general, tab_dev, tab_design = st.tabs(
 
 
 # ==========================================
+# FUNCIÓN PARA MOSTRAR REPORTE
+# ==========================================
+
+def mostrar_reporte(reporte):
+
+    col1, col2 = st.columns([5, 1])
+
+    with col1:
+
+        st.markdown(
+            f"**{reporte['titulo']}**"
+        )
+
+        st.caption(
+            f"{reporte['pais']} · Reporte #{reporte['id']}"
+        )
+
+    with col2:
+
+        if reporte["urgencia"] == "Alta":
+
+            st.error(
+                "🔴 Alta"
+            )
+
+        elif reporte["urgencia"] == "Media":
+
+            st.warning(
+                "🟡 Media"
+            )
+
+        else:
+
+            st.success(
+                "🟢 Baja"
+            )
+
+    if reporte["estado"] == "En progreso":
+
+        st.info(
+            "En progreso"
+        )
+
+    elif reporte["estado"] == "Pendiente":
+
+        st.caption(
+            "Pendiente"
+        )
+
+    elif reporte["estado"] == "En revisión":
+
+        st.warning(
+            "En revisión"
+        )
+
+    else:
+
+        st.success(
+            "Resuelto"
+        )
+
+
+# ==========================================
 # FUNCIÓN PARA MOSTRAR MIEMBRO
 # ==========================================
 
 def mostrar_miembro(miembro):
 
     reportes = [
-        x for x in TEAM_REPORTS
-        if x["miembro_id"] == miembro["id"]
+        reporte
+        for reporte in TEAM_REPORTS
+        if reporte["miembro_id"] == miembro["id"]
     ]
 
     iniciales = "".join(
-        parte[0]
-        for parte in miembro["nombre"].split()
+        palabra[0]
+        for palabra in miembro["nombre"].split()
     ).upper()
 
 
-    # ------------------------------
-    # CABECERA DE LA CARD
-    # ------------------------------
+    # ======================================
+    # CARD DEL MIEMBRO
+    # ======================================
 
-    st.markdown(
-    textwrap.dedent(f"""
-    <div class="member-card">
+    with st.container(border=True):
 
-        <div style="
-            display:flex;
-            align-items:center;
-            gap:14px;
-            margin-bottom:18px;
-        ">
+        # Cabecera
 
-            <div class="avatar">
-                {iniciales}
-            </div>
+        col1, col2 = st.columns([1, 5])
 
-            <div>
+        with col1:
 
+            st.markdown(
+                f"""
                 <div style="
-                    color:#17213a;
-                    font-size:18px;
-                    font-weight:700;
-                ">
-                    {miembro["nombre"]}
-                </div>
-
-                <div style="
-                    color:#687080;
-                    font-size:13px;
-                    margin-top:3px;
-                ">
-                    {miembro["rol"]} · {miembro["estado"]}
-                </div>
-
-            </div>
-
-            </div>
-    
-            <div style="
-                color:#17213a;
-                font-size:13px;
-                font-weight:700;
-                margin-bottom:8px;
-            ">
-                Reportes asignados · {len(reportes)}
-            </div>
-        """),
-        unsafe_allow_html=True
-        )
-
-
-    # ------------------------------
-    # REPORTES
-    # ------------------------------
-
-    if reportes:
-
-        for reporte in reportes:
-
-            if reporte["urgencia"] == "Alta":
-                urgency_class = "badge-high"
-
-            elif reporte["urgencia"] == "Media":
-                urgency_class = "badge-medium"
-
-            else:
-                urgency_class = "badge-low"
-
-
-            if reporte["estado"] == "En progreso":
-                status_class = "badge-progress"
-
-            elif reporte["estado"] == "Pendiente":
-                status_class = "badge-pending"
-
-            elif reporte["estado"] == "En revisión":
-                status_class = "badge-review"
-
-            else:
-                status_class = "badge-resolved"
-
-
-           st.markdown(
-            textwrap.dedent(f"""
-                <div class="report-row">
-
-                <div class="report-title">
-                    {reporte["titulo"]}
-                </div>
-
-                <div class="report-meta">
-                    {reporte["pais"]}
-                </div>
-
-                <div style="
-                    margin-top:8px;
+                    width:48px;
+                    height:48px;
+                    border-radius:50%;
+                    background:linear-gradient(
+                        135deg,
+                        #2fb7b5,
+                        #17213a
+                    );
+                    color:white;
                     display:flex;
-                    gap:6px;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:700;
+                    font-size:17px;
                 ">
-
-            <span class="badge {urgency_class}">
-                {reporte["urgencia"]}
-            </span>
-
-            <span class="badge {status_class}">
-                {reporte["estado"]}
-            </span>
-
-            </div>
-
-            </div>
-            """),
-            unsafe_allow_html=True
+                    {iniciales}
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
-    else:
+        with col2:
 
-        st.caption(
-            "No hay reportes asignados."
+            st.markdown(
+                f"### {miembro['nombre']}"
+            )
+
+            st.caption(
+                f"{miembro['rol']} · {miembro['estado']}"
+            )
+
+
+        st.markdown(
+            f"**Reportes asignados · {len(reportes)}**"
         )
 
 
-    # Cerrar card
+        # ==================================
+        # REPORTES
+        # ==================================
 
-    st.markdown(
-        "</div>",
-        unsafe_allow_html=True
-    )
+        if not reportes:
+
+            st.info(
+                "Este miembro no tiene reportes asignados."
+            )
+
+        else:
+
+            for reporte in reportes:
+
+                with st.container(border=True):
+
+                    mostrar_reporte(reporte)
 
 
 # ==========================================
@@ -607,15 +498,13 @@ with tab_general:
 
     st.subheader("Actividad del equipo")
 
-    if TEAM_MEMBERS:
+    columns = st.columns(2)
 
-        columns = st.columns(2)
+    for index, miembro in enumerate(TEAM_MEMBERS):
 
-        for index, miembro in enumerate(TEAM_MEMBERS):
+        with columns[index % 2]:
 
-            with columns[index % 2]:
-
-                mostrar_miembro(miembro)
+            mostrar_miembro(miembro)
 
 
 # ==========================================
@@ -625,8 +514,9 @@ with tab_general:
 with tab_dev:
 
     desarrolladores = [
-        x for x in TEAM_MEMBERS
-        if x["rol"] == "Desarrollador"
+        miembro
+        for miembro in TEAM_MEMBERS
+        if miembro["rol"] == "Desarrollador"
     ]
 
     if desarrolladores:
@@ -653,8 +543,9 @@ with tab_dev:
 with tab_design:
 
     disenadores = [
-        x for x in TEAM_MEMBERS
-        if x["rol"] == "Diseñadora"
+        miembro
+        for miembro in TEAM_MEMBERS
+        if miembro["rol"] == "Diseñadora"
     ]
 
     if disenadores:
