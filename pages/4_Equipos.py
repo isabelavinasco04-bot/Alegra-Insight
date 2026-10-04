@@ -1,6 +1,8 @@
 import streamlit as st
 import data
-
+st.write("ARCHIVO DATA:", data.__file__)
+st.write("TIENE TEAM_MEMBERS:", hasattr(data, "TEAM_MEMBERS"))
+st.write("VARIABLES:", dir(data))
 
 # ==========================================
 # CONFIGURACIÓN
