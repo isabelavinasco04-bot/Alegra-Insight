@@ -78,6 +78,20 @@ st.markdown("""
         line-height: 1.5;
     }
 
+        .stButton > button {
+        background-color: #172B4D;
+        color: white;
+        border: 1px solid #172B4D;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .stButton > button:hover {
+        background-color: #0F1F38;
+        color: white;
+        border-color: #0F1F38;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
