@@ -118,7 +118,7 @@ with st.sidebar:
 
     # Logo oficial de Alegra
     st.image(
-        "Logo_de_Alegra.png",
+        "alegra_blanco.png",
         width=130
     )
 
