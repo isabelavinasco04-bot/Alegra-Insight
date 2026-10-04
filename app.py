@@ -93,6 +93,21 @@ equipos_page = st.Page(
     "pages/4_Equipos.py",
     title="Equipos"
 )
+analisis_page = st.Page(
+    "pages/5_Analisis.py",
+    title="Análisis"
+)
+
+pg = st.navigation(
+    [
+        home_page,
+        buzon_page,
+        sesiones_page,
+        equipos_page,
+        analisis_page
+    ],
+    position="hidden"
+)
 
 
 # ==========================================
