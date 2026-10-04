@@ -98,18 +98,6 @@ analisis_page = st.Page(
     title="Análisis"
 )
 
-pg = st.navigation(
-    [
-        home_page,
-        buzon_page,
-        sesiones_page,
-        equipos_page,
-        analisis_page
-    ],
-    position="hidden"
-)
-
-
 # ==========================================
 # NAVEGACIÓN
 # ==========================================
@@ -119,7 +107,8 @@ pg = st.navigation(
         home_page,
         buzon_page,
         sesiones_page,
-        equipos_page
+        equipos_page,
+        analisis_page
     ],
     position="hidden"
 )
