@@ -216,6 +216,27 @@ div.stButton > button:hover {
     border-top: 1px solid #e5e7eb;
 }
 
+/* Switch - Alegra */
+div[data-testid="stToggle"] [role="switch"] {
+    background: linear-gradient(
+        135deg,
+        #2fb7b5,
+        #17213a
+    ) !important;
+}
+
+div[data-testid="stToggle"] [role="switch"][aria-checked="false"] {
+    background: #dfe3e8 !important;
+}
+
+div[data-testid="stToggle"] [role="switch"][aria-checked="true"] {
+    background: linear-gradient(
+        135deg,
+        #2fb7b5,
+        #17213a
+    ) !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
