@@ -1,4 +1,5 @@
 import streamlit as st
+import textwrap
 from data import ALL_FEEDBACK
 
 
@@ -470,53 +471,53 @@ def mostrar_miembro(miembro):
     # ------------------------------
 
     st.markdown(
-        f"""
-<div class="member-card">
+    textwrap.dedent(f"""
+    <div class="member-card">
 
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:14px;
-        margin-bottom:18px;
-    ">
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:14px;
+            margin-bottom:18px;
+        ">
 
-        <div class="avatar">
-            {iniciales}
-        </div>
+            <div class="avatar">
+                {iniciales}
+            </div>
 
-        <div>
+            <div>
 
+                <div style="
+                    color:#17213a;
+                    font-size:18px;
+                    font-weight:700;
+                ">
+                    {miembro["nombre"]}
+                </div>
+
+                <div style="
+                    color:#687080;
+                    font-size:13px;
+                    margin-top:3px;
+                ">
+                    {miembro["rol"]} · {miembro["estado"]}
+                </div>
+
+            </div>
+
+            </div>
+    
             <div style="
                 color:#17213a;
-                font-size:18px;
-                font-weight:700;
-            ">
-                {miembro["nombre"]}
-            </div>
-
-            <div style="
-                color:#687080;
                 font-size:13px;
-                margin-top:3px;
+                font-weight:700;
+                margin-bottom:8px;
             ">
-                {miembro["rol"]} · {miembro["estado"]}
+                Reportes asignados · {len(reportes)}
             </div>
-
-        </div>
-
-    </div>
-
-    <div style="
-        color:#17213a;
-        font-size:13px;
-        font-weight:700;
-        margin-bottom:8px;
-    ">
-        Reportes asignados · {len(reportes)}
-    </div>
-""",
+        """),
         unsafe_allow_html=True
-    )
+        )
 
 
     # ------------------------------
@@ -550,37 +551,37 @@ def mostrar_miembro(miembro):
                 status_class = "badge-resolved"
 
 
-            st.markdown(
-                f"""
-<div class="report-row">
+           st.markdown(
+            textwrap.dedent(f"""
+                <div class="report-row">
 
-    <div class="report-title">
-        {reporte["titulo"]}
-    </div>
+                <div class="report-title">
+                    {reporte["titulo"]}
+                </div>
 
-    <div class="report-meta">
-        {reporte["pais"]}
-    </div>
+                <div class="report-meta">
+                    {reporte["pais"]}
+                </div>
 
-    <div style="
-        margin-top:8px;
-        display:flex;
-        gap:6px;
-    ">
+                <div style="
+                    margin-top:8px;
+                    display:flex;
+                    gap:6px;
+                ">
 
-        <span class="badge {urgency_class}">
-            {reporte["urgencia"]}
-        </span>
+            <span class="badge {urgency_class}">
+                {reporte["urgencia"]}
+            </span>
 
-        <span class="badge {status_class}">
-            {reporte["estado"]}
-        </span>
+            <span class="badge {status_class}">
+                {reporte["estado"]}
+            </span>
 
-    </div>
+            </div>
 
-</div>
-""",
-                unsafe_allow_html=True
+            </div>
+            """),
+            unsafe_allow_html=True
             )
 
     else:
