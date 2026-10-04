@@ -2,18 +2,6 @@ import streamlit as st
 from google import genai
 from data import ALL_FEEDBACK
 
-
-# ==========================================
-# CONFIGURACIÓN
-# ==========================================
-
-st.set_page_config(
-    page_title="Alegra AI",
-    page_icon="🌿",
-    layout="wide"
-)
-
-
 # ==========================================
 # CONEXIÓN CON GEMINI
 # ==========================================
@@ -46,20 +34,146 @@ h1 {
     color: #172554;
 }
 
+.feedback-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 14px;
+    background: white;
+}
+
+.feedback-card:hover {
+    border-color: #2bb8b3;
+    box-shadow: 0 4px 14px rgba(23,37,84,0.06);
+}
+
 </style>
 """, unsafe_allow_html=True)
-
 
 
 # ==========================================
 # HEADER
 # ==========================================
 
-st.title("Buzón de usuarios")
+header_col1, header_col2 = st.columns([5, 1])
 
-st.caption(
-    "Todos los comentarios y tickets, organizados y analizados con IA."
-)
+with header_col1:
+
+    st.title("Buzón de usuarios")
+
+    st.caption(
+        "Todos los comentarios, tickets y feedback organizados para encontrar oportunidades."
+    )
+
+with header_col2:
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if st.button(
+        "＋ Agregar reporte",
+        use_container_width=True,
+        type="primary"
+    ):
+        st.session_state.show_add_report = True
+
+
+# ==========================================
+# AGREGAR REPORTE MANUALMENTE
+# ==========================================
+
+if "show_add_report" not in st.session_state:
+    st.session_state.show_add_report = False
+
+
+if st.session_state.show_add_report:
+
+    with st.container(border=True):
+
+        st.subheader("＋ Agregar nuevo reporte")
+
+        comentario = st.text_area(
+            "Comentario",
+            placeholder="Pega aquí el comentario o describe el problema..."
+        )
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+
+            tipo = st.selectbox(
+                "Tipo",
+                ["Reseña", "Ticket"]
+            )
+
+        with col2:
+
+            pais = st.selectbox(
+                "País",
+                [
+                    "Colombia",
+                    "México",
+                    "República Dominicana",
+                    "España"
+                ]
+            )
+
+        with col3:
+
+            urgencia = st.selectbox(
+                "Urgencia",
+                ["Alta", "Media", "Baja"]
+            )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            if st.button(
+                "Guardar reporte",
+                type="primary",
+                use_container_width=True
+            ):
+
+                if comentario.strip():
+
+                    nuevo_id = max(
+                        [x["id"] for x in ALL_FEEDBACK]
+                    ) + 1
+
+                    ALL_FEEDBACK.append({
+                        "id": nuevo_id,
+                        "tipo": tipo,
+                        "pais": pais,
+                        "urgencia": urgencia,
+                        "estado": "Sin analizar",
+                        "comentario": comentario
+                    })
+
+                    st.session_state.show_add_report = False
+
+                    st.success("Reporte agregado correctamente.")
+
+                    st.rerun()
+
+                else:
+
+                    st.warning(
+                        "Escribe un comentario antes de guardar."
+                    )
+
+        with col2:
+
+            if st.button(
+                "Cancelar",
+                use_container_width=True
+            ):
+
+                st.session_state.show_add_report = False
+
+                st.rerun()
+
+
+st.markdown("---")
 
 
 # ==========================================
@@ -69,12 +183,14 @@ st.caption(
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
+
     st.metric(
-        "Total",
+        "Feedback total",
         len(ALL_FEEDBACK)
     )
 
 with col2:
+
     st.metric(
         "Reseñas",
         len([
@@ -84,6 +200,7 @@ with col2:
     )
 
 with col3:
+
     st.metric(
         "Tickets",
         len([
@@ -93,16 +210,19 @@ with col3:
     )
 
 with col4:
+
     st.metric(
-        "Sin analizar",
-        len([
-            x for x in ALL_FEEDBACK
-            if x["estado"] == "Sin analizar"
-        ])
+        "Países",
+        len(set(
+            x["pais"]
+            for x in ALL_FEEDBACK
+        ))
     )
 
 
 st.markdown("---")
+
+
 # ==========================================
 # FILTROS
 # ==========================================
@@ -139,248 +259,137 @@ with col3:
 
 with col4:
 
-    status_filter = st.selectbox(
-        "Estado",
-        ["Todos", "Sin analizar", "Analizado"]
+    type_filter = st.selectbox(
+        "Tipo",
+        ["Todos", "Reseña", "Ticket"]
     )
 
-# ==========================================
-# PESTAÑAS
-# ==========================================
-
-tab1, tab2, tab3 = st.tabs([
-    "Todos",
-    "Reseñas",
-    "Tickets"
-])
-
-
-if "tab_selection" not in st.session_state:
-    st.session_state.tab_selection = "Todos"
-
-
 
 # ==========================================
-# FUNCIÓN PARA MOSTRAR CASOS
+# FILTRAR DATOS
 # ==========================================
 
-def show_feedback(items, view_key):
+filtered_data = ALL_FEEDBACK.copy()
 
-    filtered_data = items
 
-    # Buscar
-    if search:
+if search:
 
-        filtered_data = [
-            x for x in filtered_data
-            if search.lower() in x["comentario"].lower()
-        ]
+    filtered_data = [
+        x for x in filtered_data
+        if search.lower() in x["comentario"].lower()
+    ]
 
-    # País
-    if country_filter != "Todos":
 
-        filtered_data = [
-            x for x in filtered_data
-            if x["pais"] == country_filter
-        ]
+if country_filter != "Todos":
 
-    # Urgencia
-    if urgency_filter != "Todas":
+    filtered_data = [
+        x for x in filtered_data
+        if x["pais"] == country_filter
+    ]
 
-        filtered_data = [
-            x for x in filtered_data
-            if x["urgencia"] == urgency_filter
-        ]
 
-    # Estado
-    if status_filter != "Todos":
+if urgency_filter != "Todas":
 
-        filtered_data = [
-            x for x in filtered_data
-            if x["estado"] == status_filter
-        ]
+    filtered_data = [
+        x for x in filtered_data
+        if x["urgencia"] == urgency_filter
+    ]
 
-    st.markdown(
-        f"### {len(filtered_data)} resultados"
-    )
 
-    # ======================================
-    # CASOS
-    # ======================================
+if type_filter != "Todos":
 
-    for item in filtered_data:
+    filtered_data = [
+        x for x in filtered_data
+        if x["tipo"] == type_filter
+    ]
 
-        with st.container(border=True):
 
-            col1, col2, col3, col4, col5 = st.columns(
-                [0.5, 4, 1.2, 1.2, 1.3]
+# ==========================================
+# RESULTADOS
+# ==========================================
+
+st.markdown(
+    f"### {len(filtered_data)} resultados"
+)
+
+
+# ==========================================
+# MOSTRAR FEEDBACK
+# ==========================================
+
+for item in filtered_data:
+
+    with st.container(border=True):
+
+        col1, col2, col3, col4 = st.columns(
+            [0.5, 4.5, 1.2, 1.5]
+        )
+
+        # ------------------------------
+        # ICONO
+        # ------------------------------
+
+        with col1:
+
+            if item["tipo"] == "Ticket":
+                st.write("🎫")
+            else:
+                st.write("💬")
+
+
+        # ------------------------------
+        # COMENTARIO
+        # ------------------------------
+
+        with col2:
+
+            st.markdown(
+                f"**{item['comentario']}**"
             )
 
-            # Tipo
-            with col1:
+            st.caption(
+                f"{item['tipo']} · ID #{item['id']}"
+            )
 
-                if item["tipo"] == "Ticket":
-                    st.write("🎫")
-                else:
-                    st.write("💬")
 
-            # Comentario
-            with col2:
+        # ------------------------------
+        # PAÍS
+        # ------------------------------
 
-                st.write(
-                    f"**{item['comentario']}**"
-                )
+        with col3:
 
-                st.caption(
-                    f"{item['tipo']} · ID #{item['id']}"
-                )
+            st.write(item["pais"])
 
-            # País
-            with col3:
+            if item["urgencia"] == "Alta":
 
-                st.write(item["pais"])
+                st.error("🔴 Alta")
 
-            # Urgencia
-            with col4:
+            elif item["urgencia"] == "Media":
 
-                if item["urgencia"] == "Alta":
+                st.warning("🟡 Media")
 
-                    st.error("🔴 Alta")
+            else:
 
-                elif item["urgencia"] == "Media":
+                st.success("🟢 Baja")
 
-                    st.warning("🟡 Media")
 
-                else:
+        # ------------------------------
+        # BOTÓN IA
+        # ------------------------------
 
-                    st.success("🟢 Baja")
-
-            # Estado / botón
-            with col5:
-
-                if item["estado"] == "Sin analizar":
-
-                    st.caption("Sin analizar")
-
-                else:
-
-                    st.success("Analizado")
-
-            # ==================================
-            # BOTÓN IA
-            # ==================================
+        with col4:
 
             if st.button(
-            "Analizar con IA",
-            key=f"analizar_{view_key}_{item['id']}"
+                "✨ Analizar con IA",
+                key=f"analizar_{item['id']}",
+                use_container_width=True
             ):
 
-                with st.spinner(
-                    "Analizando comentario..."
-                ):
+                st.session_state.selected_feedback = item
 
-                    try:
-
-                        response = client.models.generate_content(
-                            model=GEMINI_MODEL,
-                            contents=f"""
-Eres un Product Manager de Alegra.
-
-Analiza el siguiente comentario de usuario.
-
-COMENTARIO:
-{item['comentario']}
-
-CONTEXTO:
-- Tipo: {item['tipo']}
-- País: {item['pais']}
-- Calificación: {item.get('calificacion', 'No aplica')}
-
-Necesito que identifiques:
-
-1. Problema identificado
-2. Severidad
-3. Impacto
-4. Área afectada
-5. Hipótesis
-6. Información faltante
-
-No inventes información.
-
-Diferencia claramente los hechos
-de las hipótesis.
-
-Si algo no está disponible,
-indica "Por confirmar".
-"""
-                        )
-
-                        if response and response.text:
-
-                            st.success(
-                                "Análisis completado"
-                            )
-
-                            st.markdown(
-                                "### 🧠 Análisis de IA"
-                            )
-
-                            st.write(
-                                response.text
-                            )
-
-                        else:
-
-                            st.warning(
-                                "Gemini no devolvió contenido. "
-                                "Intenta nuevamente."
-                            )
-
-                    except Exception as e:
-
-                        st.error(
-                            "No pudimos analizar este comentario "
-                            "en este momento."
-                        )
-
-                        st.caption(
-                            "Intenta nuevamente en unos segundos."
-                        )
-
-                        st.code(str(e))
-
-
-# ==========================================
-# CONTENIDO DE LAS PESTAÑASs
-# ==========================================
-
-with tab1:
-
-    show_feedback(
-        ALL_FEEDBACK,
-        "todos"
-    )
-
-
-with tab2:
-
-    reviews = [
-        x for x in ALL_FEEDBACK
-        if x["tipo"] == "Reseña"
-    ]
-
-    show_feedback(
-        reviews,
-        "resenas"
-    )
-
-
-with tab3:
-
-    tickets = [
-        x for x in ALL_FEEDBACK
-        if x["tipo"] == "Ticket"
-    ]
+                st.switch_page(
+                    "pages/5_Analisis.py"
+                )
 
     show_feedback(
         tickets,
