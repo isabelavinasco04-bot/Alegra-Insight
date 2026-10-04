@@ -290,7 +290,7 @@ with col4:
 
     type_filter = st.selectbox(
         "Tipo",
-        ["Todos", "Reseña", "Ticket"]
+        ["Todos", "Reseña", "Ticket", "Sesión con cliente"]
     )
 
 
