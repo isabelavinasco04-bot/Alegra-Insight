@@ -1,5 +1,5 @@
 import streamlit as st
-from data import TEAM_MEMBERS
+import data
 
 
 # ==========================================
@@ -500,7 +500,7 @@ with tab_general:
 
     columns = st.columns(2)
 
-    for index, miembro in enumerate(TEAM_MEMBERS):
+    for index, miembro in enumerate(data.TEAM_MEMBERS):
 
         with columns[index % 2]:
 
@@ -515,7 +515,7 @@ with tab_dev:
 
     desarrolladores = [
         miembro
-        for miembro in TEAM_MEMBERS
+        for miembro in data.TEAM_MEMBERS
         if miembro["rol"] == "Desarrollador"
     ]
 
@@ -544,7 +544,7 @@ with tab_design:
 
     disenadores = [
         miembro
-        for miembro in TEAM_MEMBERS
+        for miembro in data.TEAM_MEMBERS
         if miembro["rol"] == "Diseñadora"
     ]
 
