@@ -168,42 +168,20 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
 # ==========================================
 # PREGUNTA A LA IA
 # ==========================================
 
+if "question" not in st.session_state:
+    st.session_state.question = ""
+
+
 question = st.text_input(
     "",
     placeholder="Pregunta a la IA sobre algún reporte...",
+    key="question",
     label_visibility="collapsed"
 )
-
-
-if question:
-
-    with st.spinner("Analizando los reportes..."):
-
-        try:
-
-            respuesta = preguntar_a_ia(question)
-
-
-            st.markdown("### Alegra Insight")
-
-            st.write(respuesta)
-
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        except Exception as e:
-
-            st.error(
-                "No pude completar el análisis en este momento."
-            )
-
-            st.caption(
-                f"Detalle técnico: {e}"
-            )
 
 
 # ==========================================
@@ -212,43 +190,42 @@ if question:
 
 col1, col2, col3 = st.columns(3)
 
-
 with col1:
-
     if st.button(
         "💬 ¿Qué problemas se están reportando?",
         use_container_width=True
     ):
-
-        st.session_state["pregunta_ia"] = (
-            "¿Cuáles son los principales problemas que "
-            "están reportando los usuarios?"
+        st.session_state.question = (
+            "¿Qué problemas se están reportando? "
+            "Analiza todos los reportes disponibles, identifica los problemas "
+            "más frecuentes y resume los principales hallazgos."
         )
+        st.rerun()
 
 
 with col2:
-
     if st.button(
         "📄 Muéstrame los reportes de facturación",
         use_container_width=True
     ):
-
-        st.session_state["pregunta_ia"] = (
-            "¿Qué problemas relacionados con facturación "
-            "están reportando los usuarios?"
+        st.session_state.question = (
+            "Muéstrame los reportes relacionados con problemas de facturación. "
+            "Indica qué está pasando, en qué países ocurre y qué tan urgente es."
         )
+        st.rerun()
 
 
 with col3:
-
     if st.button(
         "👥 ¿Qué está trabajando el equipo?",
         use_container_width=True
     ):
-
-        st.switch_page("pages/4_Equipos.py")
-
-
+        st.session_state.question = (
+            "A partir de todos los reportes disponibles, "
+            "¿qué problemas debería estar trabajando prioritariamente el equipo? "
+            "Agrupa los problemas relacionados y explica por qué deberían ser prioridad."
+        )
+        st.rerun()
 # ==========================================
 # ACCIONES PRINCIPALES
 # ==========================================
