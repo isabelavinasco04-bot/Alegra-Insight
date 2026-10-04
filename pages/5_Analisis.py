@@ -1173,8 +1173,53 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
+# ==========================================
+# INICIALIZAR EQUIPO EN SESSION STATE
+# ==========================================
+
+if "team_members" not in st.session_state:
+
+    st.session_state.team_members = [
+        {
+            "id": 1,
+            "nombre": "Juan",
+            "rol": "Desarrollador",
+            "estado": "Disponible",
+            "reportes": []
+        },
+        {
+            "id": 2,
+            "nombre": "Carlos",
+            "rol": "Desarrollador",
+            "estado": "Ocupado",
+            "reportes": []
+        },
+        {
+            "id": 3,
+            "nombre": "Sara",
+            "rol": "Diseñadora",
+            "estado": "Disponible",
+            "reportes": []
+        }
+    ]
+
+
+# ==========================================
+# ASIGNACIÓN DEL BUG REPORT
+# ==========================================
+
+if "show_assignment" not in st.session_state:
+
+    st.session_state.show_assignment = False
+
+
 send_col, pdf_col = st.columns([1, 1])
 
+
+# ==========================================
+# BOTÓN ENVIAR BUG REPORT
+# ==========================================
 
 with send_col:
 
@@ -1184,18 +1229,12 @@ with send_col:
         type="primary"
     ):
 
-        if st.session_state.attach_analysis:
+        st.session_state.show_assignment = True
 
-            st.success(
-                "Bug report enviado con el análisis adjunto."
-            )
 
-        else:
-
-            st.success(
-                "Bug report enviado correctamente."
-            )
-
+# ==========================================
+# DESCARGAR PDF
+# ==========================================
 
 with pdf_col:
 
@@ -1208,3 +1247,179 @@ with pdf_col:
         mime="application/pdf",
         use_container_width=True
     )
+
+
+# ==========================================
+# PANEL DE ASIGNACIÓN
+# ==========================================
+
+if st.session_state.show_assignment:
+
+    st.markdown(
+        "<br>",
+        unsafe_allow_html=True
+    )
+
+    with st.container(border=True):
+
+        st.markdown(
+            "### 👥 ¿A quién deseas asignar este bug report?"
+        )
+
+        st.caption(
+            "Selecciona al miembro del equipo que se encargará de revisar este problema."
+        )
+
+
+        # --------------------------------------
+        # SELECCIONAR MIEMBRO
+        # --------------------------------------
+
+        opciones_equipo = [
+            f"{miembro['nombre']} · {miembro['rol']}"
+            for miembro in st.session_state.team_members
+        ]
+
+
+        seleccionado = st.selectbox(
+            "Miembro del equipo",
+            opciones_equipo,
+            key=f"assigned_member_{item['id']}"
+        )
+
+
+        # Encontrar miembro seleccionado
+
+        miembro_seleccionado = next(
+            miembro
+            for miembro in st.session_state.team_members
+            if f"{miembro['nombre']} · {miembro['rol']}" == seleccionado
+        )
+
+
+        st.markdown(
+            f"""
+            <div style="
+                background:#f8fafb;
+                border:1px solid #e3e7ed;
+                border-radius:12px;
+                padding:14px 16px;
+                margin-top:8px;
+                margin-bottom:16px;
+            ">
+                <div style="
+                    color:#687080;
+                    font-size:12px;
+                    font-weight:700;
+                    text-transform:uppercase;
+                    margin-bottom:5px;
+                ">
+                    Asignar a
+                </div>
+
+                <div style="
+                    color:#17213a;
+                    font-size:16px;
+                    font-weight:700;
+                ">
+                    {miembro_seleccionado['nombre']}
+                </div>
+
+                <div style="
+                    color:#687080;
+                    font-size:13px;
+                    margin-top:3px;
+                ">
+                    {miembro_seleccionado['rol']}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+        col_confirmar, col_cancelar = st.columns([1, 1])
+
+
+        # --------------------------------------
+        # CONFIRMAR
+        # --------------------------------------
+
+        with col_confirmar:
+
+            if st.button(
+                "✓ Asignar reporte",
+                type="primary",
+                use_container_width=True
+            ):
+
+                # Evitar duplicar el mismo reporte
+
+                reporte_ya_asignado = any(
+                    reporte.get("id") == item["id"]
+                    for reporte in miembro_seleccionado["reportes"]
+                )
+
+
+                if not reporte_ya_asignado:
+
+                    nuevo_reporte = {
+                        "id": item["id"],
+                        "titulo": (
+                            analysis.get("titulo")
+                            or f"Bug report #{item['id']}"
+                        ),
+                        "urgencia": item.get(
+                            "urgencia",
+                            "Media"
+                        ),
+                        "estado": "Pendiente",
+                        "pais": item.get(
+                            "pais",
+                            "Por confirmar"
+                        )
+                    }
+
+
+                    miembro_seleccionado["reportes"].append(
+                        nuevo_reporte
+                    )
+
+
+                st.session_state.show_assignment = False
+
+                st.session_state.last_assignment = (
+                    miembro_seleccionado["nombre"]
+                )
+
+                st.rerun()
+
+
+        # --------------------------------------
+        # CANCELAR
+        # --------------------------------------
+
+        with col_cancelar:
+
+            if st.button(
+                "Cancelar",
+                use_container_width=True
+            ):
+
+                st.session_state.show_assignment = False
+
+                st.rerun()
+
+
+# ==========================================
+# CONFIRMACIÓN
+# ==========================================
+
+if "last_assignment" in st.session_state:
+
+    st.success(
+        f"✓ Bug report enviado y asignado a "
+        f"{st.session_state.last_assignment}."
+    )
+
+    del st.session_state.last_assignment
