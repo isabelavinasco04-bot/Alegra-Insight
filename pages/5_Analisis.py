@@ -206,36 +206,6 @@ div.stButton > button:hover {
 }
 
 
-/* Switch apagado */
-
-[data-testid="stToggle"] div[role="switch"] {
-    background-color: #dfe3e8 !important;
-    border: 1px solid #dfe3e8 !important;
-}
-
-
-/* Switch encendido */
-
-[data-testid="stToggle"] div[role="switch"][aria-checked="true"] {
-    background: linear-gradient(
-        135deg,
-        #2fb7b5 0%,
-        #17213a 100%
-    ) !important;
-
-    border-color: transparent !important;
-}
-
-
-/* Círculo del switch */
-
-[data-testid="stToggle"] div[role="switch"]::before {
-    background-color: #ffffff !important;
-    border-color: #ffffff !important;
-    box-shadow: 0 1px 4px rgba(23, 33, 58, 0.18) !important;
-}
-
-
 /* ==========================================
    DIVISOR
    ========================================== */
@@ -244,27 +214,6 @@ div.stButton > button:hover {
     margin-top: 28px;
     margin-bottom: 18px;
     border-top: 1px solid #e5e7eb;
-}
-
-/* Switch - Alegra */
-div[data-testid="stToggle"] [role="switch"] {
-    background: linear-gradient(
-        135deg,
-        #2fb7b5,
-        #17213a
-    ) !important;
-}
-
-div[data-testid="stToggle"] [role="switch"][aria-checked="false"] {
-    background: #dfe3e8 !important;
-}
-
-div[data-testid="stToggle"] [role="switch"][aria-checked="true"] {
-    background: linear-gradient(
-        135deg,
-        #2fb7b5,
-        #17213a
-    ) !important;
 }
 
 </style>
@@ -529,16 +478,13 @@ if analysis_key not in st.session_state:
 
         try:
 
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt
-            )
+            resultado = generar_analisis()
 
-            if response and response.text:
+            if resultado:
 
-                analysis = response.text
-
-                st.session_state[analysis_key] = analysis
+                st.session_state[analysis_key] = parsear_analisis(
+                    resultado
+                )
 
             else:
 
@@ -546,17 +492,19 @@ if analysis_key not in st.session_state:
                     "Gemini no devolvió un análisis."
                 )
 
-        except Exception as e:
+                st.stop()
+
+        except Exception:
 
             st.error(
-                "No pudimos completar el análisis."
+                "No pudimos completar el análisis en este momento."
             )
 
-            st.error(
-                f"Error de Gemini: {e}"
+            st.caption(
+                "Revisa la conexión con Gemini e intenta nuevamente."
             )
 
-            st.exception(e)
+            st.stop()
 
 
 analysis = st.session_state[analysis_key]
@@ -822,6 +770,7 @@ with right:
         st.markdown(
             analysis["oportunidad"]
         )
+
 # ==========================================
 # EDITAR + ADJUNTAR
 # ==========================================
