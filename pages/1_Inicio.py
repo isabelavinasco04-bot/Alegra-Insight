@@ -172,16 +172,8 @@ st.markdown(
 # PREGUNTA A LA IA
 # ==========================================
 
-if "question" not in st.session_state:
-    st.session_state.question = ""
-
-
-question = st.text_input(
-    "",
-    placeholder="Pregunta a la IA sobre algún reporte...",
-    key="question",
-    label_visibility="collapsed"
-)
+if "quick_question" not in st.session_state:
+    st.session_state.quick_question = None
 
 
 # ==========================================
@@ -195,12 +187,11 @@ with col1:
         "💬 ¿Qué problemas se están reportando?",
         use_container_width=True
     ):
-        st.session_state.question = (
+        st.session_state.quick_question = (
             "¿Qué problemas se están reportando? "
             "Analiza todos los reportes disponibles, identifica los problemas "
             "más frecuentes y resume los principales hallazgos."
         )
-        st.rerun()
 
 
 with col2:
@@ -208,11 +199,10 @@ with col2:
         "📄 Muéstrame los reportes de facturación",
         use_container_width=True
     ):
-        st.session_state.question = (
+        st.session_state.quick_question = (
             "Muéstrame los reportes relacionados con problemas de facturación. "
             "Indica qué está pasando, en qué países ocurre y qué tan urgente es."
         )
-        st.rerun()
 
 
 with col3:
@@ -220,12 +210,29 @@ with col3:
         "👥 ¿Qué está trabajando el equipo?",
         use_container_width=True
     ):
-        st.session_state.question = (
+        st.session_state.quick_question = (
             "A partir de todos los reportes disponibles, "
             "¿qué problemas debería estar trabajando prioritariamente el equipo? "
             "Agrupa los problemas relacionados y explica por qué deberían ser prioridad."
         )
-        st.rerun()
+
+
+# ==========================================
+# BUSCADOR
+# ==========================================
+
+question = st.text_input(
+    "",
+    value=st.session_state.quick_question or "",
+    placeholder="Pregunta a la IA sobre algún reporte...",
+    label_visibility="collapsed"
+)
+
+
+# Después de mostrar la pregunta rápida,
+# la limpiamos para que no se quede pegada.
+if st.session_state.quick_question is not None:
+    st.session_state.quick_question = None
 # ==========================================
 # ACCIONES PRINCIPALES
 # ==========================================
