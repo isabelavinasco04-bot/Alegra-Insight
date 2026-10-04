@@ -1230,8 +1230,8 @@ with send_col:
     ):
 
         st.session_state.show_assignment = True
-
-
+        st.rerun()
+        
 # ==========================================
 # DESCARGAR PDF
 # ==========================================
