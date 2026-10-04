@@ -1,6 +1,7 @@
 import streamlit as st
-from data import TEAM_MEMBERS
+import data
 
+st.write(data.TEAM_MEMBERS)
 
 # ==========================================
 # CONFIGURACIÓN
