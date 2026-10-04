@@ -1,8 +1,64 @@
 import streamlit as st
-import data
-st.write("ARCHIVO DATA:", data.__file__)
-st.write("TIENE TEAM_MEMBERS:", hasattr(data, "TEAM_MEMBERS"))
-st.write("VARIABLES:", dir(data))
+# ==========================================
+# DATOS DEL EQUIPO
+# ==========================================
+
+TEAM_MEMBERS = [
+    {
+        "id": 1,
+        "nombre": "Juan",
+        "rol": "Desarrollador",
+        "estado": "Disponible",
+        "reportes": [
+            {
+                "titulo": "Error al emitir facturas · México",
+                "urgencia": "Alta",
+                "estado": "En progreso"
+            },
+            {
+                "titulo": "La app se cierra al abrir Reportes",
+                "urgencia": "Alta",
+                "estado": "Pendiente"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "nombre": "Carlos",
+        "rol": "Desarrollador",
+        "estado": "Ocupado",
+        "reportes": [
+            {
+                "titulo": "Subir e.firma desde el celular",
+                "urgencia": "Media",
+                "estado": "En progreso"
+            },
+            {
+                "titulo": "Pantalla en blanco · Colombia",
+                "urgencia": "Media",
+                "estado": "Pendiente"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "nombre": "Sara",
+        "rol": "Diseñadora",
+        "estado": "Disponible",
+        "reportes": [
+            {
+                "titulo": "Botones muy pequeños",
+                "urgencia": "Baja",
+                "estado": "En revisión"
+            },
+            {
+                "titulo": "Agregar descuento en la factura",
+                "urgencia": "Media",
+                "estado": "En progreso"
+            }
+        ]
+    }
+]
 
 # ==========================================
 # CONFIGURACIÓN
