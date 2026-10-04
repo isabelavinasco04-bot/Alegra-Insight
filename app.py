@@ -20,6 +20,9 @@ client = genai.Client(
     api_key=st.secrets["GEMINI_API_KEY"]
 )
 
+GEMINI_MODEL = "gemini-3.8-flash"
+)
+
 # ==========================================
 # ESTILOS
 # ==========================================
@@ -306,7 +309,7 @@ if st.button(
         try:
 
             response = client.models.generate_content(
-                model="gemini-3.8-flash",
+                model=GEMINI_MODEL,
                 contents=f"""
 Eres un Product Manager de Alegra.
 
