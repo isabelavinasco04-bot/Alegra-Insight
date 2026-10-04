@@ -83,64 +83,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ==========================================
-# SIDEBAR
-# ==========================================
-
-with st.sidebar:
-
-    st.markdown(
-        """
-        <div style="font-size:25px; font-weight:700;
-        color:#17213a; margin-bottom:35px;">
-        🌿 alegra
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-    """
-    <div style="
-        background-color: #dff7f3;
-        color: #17213a;
-        padding: 10px 12px;
-        border-radius: 8px;
-        margin-bottom: 6px;
-        font-weight: 500;
-    ">
-        ⌂ &nbsp; Inicio
-    </div>
-    """,
-    unsafe_allow_html=True
-    )
-
-    st.page_link(
-        "pages/2_Buzon.py",
-        label="▣  Buzón"
-    )
-
-    st.page_link(
-        "pages/3_Sesiones.py",
-        label="♙  Subir sesión"
-    )
-
-    st.page_link(
-        "pages/4_Equipos.py",
-        label="♧  Equipos"
-    )
-
-    st.divider()
-
-    st.markdown(
-        """
-        <div style="color:#687080; font-size:14px;">
-        Sofía<br>
-        <span style="color:#9aa0aa;">Product Manager</span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
 
 
 # ==========================================
