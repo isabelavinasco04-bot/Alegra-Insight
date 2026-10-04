@@ -74,60 +74,73 @@ if archivo is not None:
 
             try:
 
-                # --------------------------------------
-                # CASO AUDIO
-                # --------------------------------------
-
-                if archivo.type and archivo.type.startswith("audio"):
-
-                    archivo_subido = client.files.upload(
-                        file=archivo,
-                        config={
-                            "mime_type": archivo.type
-                                }
-                            )
-
-                    prompt = """
-Analiza esta sesión de usuario de Alegra.
-
-Primero transcribe la conversación de forma clara.
-
-Después genera una ficha estructurada con:
-
-1. RESUMEN
-Un resumen breve de la conversación.
-
-2. NECESIDAD PRINCIPAL
-¿Qué necesitaba o intentaba lograr el usuario?
-
-3. PROBLEMAS IDENTIFICADOS
-¿Qué problemas, frustraciones o dificultades menciona?
-
-4. SENTIMIENTO
-Indica el sentimiento predominante del usuario.
-
-5. OPORTUNIDADES
-¿Qué oportunidades de producto o experiencia aparecen?
-
-6. TEMAS
-Enumera los principales temas mencionados.
-
-7. TRANSCRIPCIÓN
-Incluye la transcripción completa de la sesión.
-
-Sé concreto y útil para un equipo de producto.
-No inventes información que no aparezca en la conversación.
-
-Devuelve la respuesta usando exactamente estas etiquetas:
-
-RESUMEN:
-NECESIDAD PRINCIPAL:
-PROBLEMAS IDENTIFICADOS:
-SENTIMIENTO:
-OPORTUNIDADES:
-TEMAS:
-TRANSCRIPCIÓN:
-"""
+                          # --------------------------------------
+            # CASO AUDIO
+            # --------------------------------------
+            
+            if archivo.type and archivo.type.startswith("audio"):
+            
+                mime_types = {
+                    "mp3": "audio/mpeg",
+                    "wav": "audio/wav",
+                    "m4a": "audio/mp4"
+                }
+            
+                extension = archivo.name.lower().split(".")[-1]
+            
+                mime_type = mime_types.get(
+                    extension,
+                    archivo.type or "audio/mpeg"
+                )
+            
+                archivo_subido = client.files.upload(
+                    file=archivo,
+                    config={
+                        "mime_type": mime_type
+                    }
+                )
+            
+                prompt = """
+            Analiza esta sesión de usuario de Alegra.
+            
+            Primero transcribe la conversación de forma clara.
+            
+            Después genera una ficha estructurada con:
+            
+            1. RESUMEN
+            Un resumen breve de la conversación.
+            
+            2. NECESIDAD PRINCIPAL
+            ¿Qué necesitaba o intentaba lograr el usuario?
+            
+            3. PROBLEMAS IDENTIFICADOS
+            ¿Qué problemas, frustraciones o dificultades menciona?
+            
+            4. SENTIMIENTO
+            Indica el sentimiento predominante del usuario.
+            
+            5. OPORTUNIDADES
+            ¿Qué oportunidades de producto o experiencia aparecen?
+            
+            6. TEMAS
+            Enumera los principales temas mencionados.
+            
+            7. TRANSCRIPCIÓN
+            Incluye la transcripción completa de la sesión.
+            
+            Sé concreto y útil para un equipo de producto.
+            No inventes información que no aparezca en la conversación.
+            
+            Devuelve la respuesta usando exactamente estas etiquetas:
+            
+            RESUMEN:
+            NECESIDAD PRINCIPAL:
+            PROBLEMAS IDENTIFICADOS:
+            SENTIMIENTO:
+            OPORTUNIDADES:
+            TEMAS:
+            TRANSCRIPCIÓN:
+            """
 
                     respuesta = client.models.generate_content(
                         model=GEMINI_MODEL,
