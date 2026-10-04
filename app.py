@@ -37,29 +37,38 @@ st.markdown("""
         border-right: none;
     }
 
-    /* Links de navegación */
-    section[data-testid="stSidebar"] a {
+    /* ==========================================
+   NAVEGACIÓN SIDEBAR
+   ========================================== */
+
+    /* Texto de los botones */
+    section[data-testid="stSidebar"] a,
+    section[data-testid="stSidebar"] a span,
+    section[data-testid="stSidebar"] a p {
         color: #ffffff !important;
         border-radius: 10px;
-        margin: 4px 0;
         transition: all 0.2s ease;
     }
 
     /* Hover */
-    section[data-testid="stSidebar"] a:hover {
+    section[data-testid="stSidebar"] a:hover,
+    section[data-testid="stSidebar"] a:hover span,
+    section[data-testid="stSidebar"] a:hover p {
         background-color: #2fb7b5 !important;
         color: #17213a !important;
     }
-
+    
     /* Página activa */
-    section[data-testid="stSidebar"] a[aria-current="page"] {
+    section[data-testid="stSidebar"] a[aria-current="page"],
+    section[data-testid="stSidebar"] a[aria-current="page"] span,
+    section[data-testid="stSidebar"] a[aria-current="page"] p {
         background-color: #2fb7b5 !important;
         color: #17213a !important;
         font-weight: 600;
     }
-
-</style>
-""", unsafe_allow_html=True)
+    
+    </style>
+    """, unsafe_allow_html=True)
 # ==========================================
 # PÁGINAS
 # ==========================================
