@@ -1,6 +1,18 @@
 import streamlit as st
 from google import genai
 from data import ALL_FEEDBACK
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle
+)
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT
 
 
 # ==========================================
@@ -22,7 +34,6 @@ client = genai.Client(
     api_key=st.secrets["GEMINI_API_KEY"]
 )
 
-# Modelo disponible para proyectos nuevos
 GEMINI_MODEL = "gemini-3.8-flash"
 
 
@@ -39,19 +50,123 @@ st.markdown("""
 
 .block-container {
     padding-top: 2rem;
-    padding-left: 4rem;
-    padding-right: 4rem;
-    padding-bottom: 4rem;
+    padding-left: 3.5rem;
+    padding-right: 3.5rem;
+    padding-bottom: 3rem;
 }
-
-/* TITULOS */
 
 h1, h2, h3 {
     color: #17213a;
 }
 
+.page-subtitle {
+    color: #687080;
+    font-size: 16px;
+    margin-top: -10px;
+    margin-bottom: 25px;
+}
 
-/* BOTONES ALEGRA */
+
+/* ==========================================
+   CARDS
+   ========================================== */
+
+.report-card {
+    background: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 16px;
+    padding: 24px;
+    height: 590px;
+    overflow-y: auto;
+}
+
+.analysis-card {
+    background: #f8fafb;
+    border: 1px solid #e3e7ed;
+    border-radius: 16px;
+    padding: 24px;
+    height: 590px;
+    overflow-y: auto;
+}
+
+
+/* Scroll bonito */
+
+.report-card::-webkit-scrollbar,
+.analysis-card::-webkit-scrollbar {
+    width: 7px;
+}
+
+.report-card::-webkit-scrollbar-thumb,
+.analysis-card::-webkit-scrollbar-thumb {
+    background: #cbd5df;
+    border-radius: 10px;
+}
+
+
+/* ==========================================
+   TÍTULOS
+   ========================================== */
+
+.card-title {
+    color: #17213a;
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.section-title {
+    color: #17213a;
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+
+.field-label {
+    color: #687080;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    margin-top: 16px;
+    margin-bottom: 5px;
+}
+
+.field-value {
+    color: #17213a;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+
+/* ==========================================
+   BADGES
+   ========================================== */
+
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.badge-teal {
+    background: #d9f7f5;
+    color: #168d89;
+}
+
+.badge-dark {
+    background: #e8edf5;
+    color: #17213a;
+}
+
+
+/* ==========================================
+   BOTONES
+   ========================================== */
 
 div.stButton > button {
     background-color: #2fb7b5;
@@ -68,46 +183,37 @@ div.stButton > button:hover {
     color: white;
 }
 
-
-/* TARJETAS */
-
-.analysis-box {
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 18px;
-}
-
-
-/* BUG REPORT */
-
-.bug-box {
-    background-color: #f8fafc;
-    border: 1px solid #dfe5eb;
-    border-left: 5px solid #2fb7b5;
-    border-radius: 16px;
-    padding: 28px;
-}
-
-
-/* TITULO DE SECCION */
-
-.section-title {
-    font-size: 20px;
-    font-weight: 700;
+.secondary-button div.stButton > button {
+    background-color: white;
     color: #17213a;
-    margin-bottom: 14px;
+    border: 1px solid #d5dbe3;
+}
+
+.secondary-button div.stButton > button:hover {
+    background-color: #17213a;
+    color: white;
+    border-color: #17213a;
 }
 
 
-/* REPORTE ORIGINAL */
+/* ==========================================
+   TOGGLE
+   ========================================== */
 
-.original-box {
-    background-color: #f7f8fa;
-    border-radius: 12px;
-    padding: 18px;
-    margin-bottom: 25px;
+[data-testid="stToggle"] label {
+    color: #17213a !important;
+    font-weight: 600;
+}
+
+
+/* ==========================================
+   DIVISOR
+   ========================================== */
+
+.action-divider {
+    margin-top: 28px;
+    margin-bottom: 18px;
+    border-top: 1px solid #e5e7eb;
 }
 
 </style>
@@ -125,6 +231,7 @@ if "selected_feedback" not in st.session_state:
     )
 
     if st.button("← Volver al buzón"):
+
         st.switch_page("pages/2_Buzon.py")
 
     st.stop()
@@ -134,49 +241,14 @@ item = st.session_state.selected_feedback
 
 
 # ==========================================
-# BOTÓN VOLVER
+# IDENTIFICADOR DEL ANÁLISIS
 # ==========================================
 
-if st.button("← Volver al buzón"):
-
-    st.switch_page("pages/2_Buzon.py")
+analysis_key = f"analysis_{item['id']}"
 
 
 # ==========================================
-# HEADER
-# ==========================================
-
-st.title("Análisis del reporte")
-
-st.caption(
-    "Alegra Insight analiza el reporte, identifica el problema "
-    "y encuentra posibles relaciones con otros casos."
-)
-
-
-# ==========================================
-# REPORTE ORIGINAL
-# ==========================================
-
-with st.container(border=True):
-
-    st.markdown("### Reporte seleccionado")
-
-    st.caption(
-        f"{item['tipo']} · ID #{item['id']} · {item['pais']}"
-    )
-
-    st.markdown(
-        f"**{item['comentario']}**"
-    )
-
-    st.caption(
-        f"Urgencia: {item['urgencia']}"
-    )
-
-
-# ==========================================
-# PREPARAR INFORMACIÓN DE TODOS LOS REPORTES
+# TODOS LOS REPORTES
 # ==========================================
 
 reportes_texto = ""
@@ -202,41 +274,33 @@ Comentario: {reporte['comentario']}
 
 
 # ==========================================
-# GENERAR ANÁLISIS AUTOMÁTICAMENTE
+# GENERAR ANÁLISIS
 # ==========================================
 
-analysis_key = f"analysis_{item['id']}"
+def generar_analisis():
 
-
-if analysis_key not in st.session_state:
-
-    with st.spinner(
-        "✨ Analizando el reporte y buscando relaciones..."
-    ):
-
-        try:
-
-            prompt = f"""
+    prompt = f"""
 Eres Alegra Insight, una herramienta interna
 para Product Managers de Alegra.
 
-Analiza el reporte seleccionado utilizando
-también el resto del feedback disponible.
+Analiza el siguiente reporte utilizando también
+el resto del feedback disponible.
 
-REGLAS IMPORTANTES:
+IMPORTANTE:
 
+- Basa las conclusiones únicamente en los datos proporcionados.
 - No inventes información.
 - Diferencia hechos de hipótesis.
-- Si falta información escribe "Por confirmar".
+- Si falta información, escribe "Por confirmar".
+- No inventes detalles técnicos.
 - Busca relaciones reales entre reportes.
-- Cuando encuentres una relación menciona el ID.
-- Sé concreta.
-- El resultado debe ser útil para un Product Manager.
+- Cuando relaciones reportes, menciona sus IDs.
+- Sé concreta y útil para decisiones de producto.
 - Responde en español.
 
-==========================================
-REPORTE SELECCIONADO
-==========================================
+========================================
+REPORTE PRINCIPAL
+========================================
 
 ID: #{item['id']}
 Tipo: {item['tipo']}
@@ -246,104 +310,199 @@ Urgencia: {item['urgencia']}
 Comentario:
 {item['comentario']}
 
-==========================================
-OTROS REPORTES DISPONIBLES
-==========================================
+========================================
+TODOS LOS REPORTES
+========================================
 
 {reportes_texto}
 
-==========================================
-FORMATO
-==========================================
+========================================
+RESPONDE EXACTAMENTE CON ESTAS SECCIONES
+========================================
 
-Devuelve exactamente estas secciones:
-
-BUG REPORT
+## BUG REPORT
 
 Problema:
-Describe claramente el problema.
+Describe el problema principal.
 
 Comportamiento observado:
-Describe qué está ocurriendo.
+Describe qué está pasando.
 
 Comportamiento esperado:
-Indica qué debería ocurrir.
-Si no se puede determinar: Por confirmar.
+Describe qué debería pasar.
 
 Impacto:
 Explica el impacto para el usuario o negocio.
 
 Severidad:
-Alta, Media o Baja.
-Explica brevemente por qué.
+Baja, Media o Alta y explica brevemente por qué.
 
-INFORMACIÓN FALTANTE
+## INSIGHTS
 
-Lista la información que sería necesaria
-para comprender o reproducir el problema.
+Identifica las necesidades, frustraciones
+o comportamientos que revela el reporte.
 
-SUPUESTOS E HIPÓTESIS
+## INFORMACIÓN FALTANTE
 
-Separa claramente posibles explicaciones
-de los hechos confirmados.
+Indica qué información hace falta para
+comprender o reproducir mejor el problema.
 
-RELACIÓN CON OTROS REPORTES
+## SUPUESTOS E HIPÓTESIS
 
-Identifica reportes relacionados.
+Separa claramente:
+Hechos confirmados:
+Hipótesis:
 
-Para cada relación indica:
+## RELACIÓN CON OTROS REPORTES
 
-ID:
-Por qué está relacionado:
-Patrón posible:
+Menciona reportes relacionados utilizando
+sus IDs y explica el posible patrón.
 
 Si no existen relaciones claras:
-No se encontraron relaciones claras.
+"No se encontraron relaciones claras."
 
-INSIGHTS
+## OPORTUNIDAD DE PRODUCTO
 
-Explica qué necesidad, frustración,
-comportamiento o oportunidad del usuario
-revela este reporte.
+Propón una oportunidad de producto basada
+únicamente en los hallazgos.
 
-OPORTUNIDAD DE PRODUCTO
-
-Describe una oportunidad de producto
-basada únicamente en la evidencia encontrada.
-
-No propongas soluciones técnicas específicas
-si los datos no las justifican.
+No propongas una solución técnica específica
+si los datos no la justifican.
 """
 
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt
-            )
+    response = client.models.generate_content(
+        model=GEMINI_MODEL,
+        contents=prompt
+    )
 
-            if response and response.text:
+    if response and response.text:
+        return response.text
 
-                st.session_state[analysis_key] = response.text
+    return None
+
+
+# ==========================================
+# PARSEAR RESPUESTA DE GEMINI
+# ==========================================
+
+def extraer_seccion(texto, titulo, siguiente=None):
+
+    if not texto:
+        return "Por confirmar."
+
+    inicio = texto.find(titulo)
+
+    if inicio == -1:
+        return "Por confirmar."
+
+    inicio += len(titulo)
+
+    if siguiente:
+
+        fin = texto.find(siguiente, inicio)
+
+        if fin != -1:
+            return texto[inicio:fin].strip()
+
+    return texto[inicio:].strip()
+
+
+def limpiar_texto(texto):
+
+    if not texto:
+        return ""
+
+    texto = texto.replace("**", "")
+    texto = texto.replace("###", "")
+    texto = texto.replace("##", "")
+
+    return texto.strip()
+
+
+def parsear_analisis(texto):
+
+    bug = extraer_seccion(
+        texto,
+        "## BUG REPORT",
+        "## INSIGHTS"
+    )
+
+    insights = extraer_seccion(
+        texto,
+        "## INSIGHTS",
+        "## INFORMACIÓN FALTANTE"
+    )
+
+    faltante = extraer_seccion(
+        texto,
+        "## INFORMACIÓN FALTANTE",
+        "## SUPUESTOS E HIPÓTESIS"
+    )
+
+    supuestos = extraer_seccion(
+        texto,
+        "## SUPUESTOS E HIPÓTESIS",
+        "## RELACIÓN CON OTROS REPORTES"
+    )
+
+    relaciones = extraer_seccion(
+        texto,
+        "## RELACIÓN CON OTROS REPORTES",
+        "## OPORTUNIDAD DE PRODUCTO"
+    )
+
+    oportunidad = extraer_seccion(
+        texto,
+        "## OPORTUNIDAD DE PRODUCTO"
+    )
+
+    return {
+        "bug": limpiar_texto(bug),
+        "insights": limpiar_texto(insights),
+        "faltante": limpiar_texto(faltante),
+        "supuestos": limpiar_texto(supuestos),
+        "relaciones": limpiar_texto(relaciones),
+        "oportunidad": limpiar_texto(oportunidad)
+    }
+
+
+# ==========================================
+# GENERACIÓN AUTOMÁTICA
+# ==========================================
+
+if analysis_key not in st.session_state:
+
+    with st.spinner(
+        "Analizando reporte y buscando patrones..."
+    ):
+
+        try:
+
+            resultado = generar_analisis()
+
+            if resultado:
+
+                st.session_state[analysis_key] = parsear_analisis(
+                    resultado
+                )
 
             else:
 
                 st.error(
-                    "Gemini no devolvió contenido."
+                    "Gemini no devolvió un análisis."
                 )
 
                 st.stop()
 
-        except Exception as e:
+        except Exception:
 
             st.error(
-                "No pudimos completar el análisis."
+                "No pudimos completar el análisis en este momento."
             )
 
             st.caption(
-                "Revisa la conexión con Gemini o intenta nuevamente."
+                "Revisa la conexión con Gemini e intenta nuevamente."
             )
-
-            # Útil mientras estamos desarrollando
-            st.code(str(e))
 
             st.stop()
 
@@ -352,259 +511,332 @@ analysis = st.session_state[analysis_key]
 
 
 # ==========================================
-# SEPARAR EL BUG REPORT DEL RESTO
+# ESTADO DEL TOGGLE
 # ==========================================
 
-def get_section(text, title, next_titles):
-
-    start = text.find(title)
-
-    if start == -1:
-        return "Por confirmar."
-
-    start += len(title)
-
-    end = len(text)
-
-    for next_title in next_titles:
-
-        position = text.find(next_title, start)
-
-        if position != -1 and position < end:
-            end = position
-
-    return text[start:end].strip()
+if "attach_analysis" not in st.session_state:
+    st.session_state.attach_analysis = True
 
 
-bug_report = get_section(
-    analysis,
-    "BUG REPORT",
-    [
-        "INFORMACIÓN FALTANTE",
-        "SUPUESTOS E HIPÓTESIS",
-        "RELACIÓN CON OTROS REPORTES",
-        "INSIGHTS",
-        "OPORTUNIDAD DE PRODUCTO"
-    ]
-)
+# ==========================================
+# HEADER
+# ==========================================
 
-informacion_faltante = get_section(
-    analysis,
-    "INFORMACIÓN FALTANTE",
-    [
-        "SUPUESTOS E HIPÓTESIS",
-        "RELACIÓN CON OTROS REPORTES",
-        "INSIGHTS",
-        "OPORTUNIDAD DE PRODUCTO"
-    ]
-)
+header_col1, header_col2 = st.columns([5, 1])
 
-supuestos = get_section(
-    analysis,
-    "SUPUESTOS E HIPÓTESIS",
-    [
-        "RELACIÓN CON OTROS REPORTES",
-        "INSIGHTS",
-        "OPORTUNIDAD DE PRODUCTO"
-    ]
-)
+with header_col1:
 
-relaciones = get_section(
-    analysis,
-    "RELACIÓN CON OTROS REPORTES",
-    [
-        "INSIGHTS",
-        "OPORTUNIDAD DE PRODUCTO"
-    ]
-)
+    st.markdown(
+        """
+        <h1 style="
+            margin-bottom:4px;
+            color:#17213a;
+        ">
+            Resultado del análisis
+        </h1>
+        """,
+        unsafe_allow_html=True
+    )
 
-insights = get_section(
-    analysis,
-    "INSIGHTS",
-    [
-        "OPORTUNIDAD DE PRODUCTO"
-    ]
-)
+    st.markdown(
+        f"""
+        <div style="
+            color:#687080;
+            font-size:15px;
+            margin-bottom:22px;
+        ">
+            Reporte #{item['id']}
+            &nbsp; · &nbsp;
+            {item['tipo']}
+            &nbsp; · &nbsp;
+            {item['pais']}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-oportunidad = get_section(
-    analysis,
-    "OPORTUNIDAD DE PRODUCTO",
-    []
+
+with header_col2:
+
+    if st.button(
+        "← Volver",
+        use_container_width=True
+    ):
+
+        st.switch_page("pages/2_Buzon.py")
+
+
+# ==========================================
+# DOS COLUMNAS PRINCIPALES
+# ==========================================
+
+left, right = st.columns(
+    [1, 1],
+    gap="large"
 )
 
 
 # ==========================================
-# RESULTADO
-# ==========================================
-
-st.markdown("---")
-
-st.markdown("## Resultado del análisis")
-
-
-# ==========================================
-# DOS COLUMNAS
-# ==========================================
-
-left, right = st.columns([1.15, 1])
-
-
-# ==========================================
-# IZQUIERDA — BUG REPORT
+# BUG REPORT
 # ==========================================
 
 with left:
 
     st.markdown(
-        '<div class="section-title">🐛 Bug Report</div>',
+        """
+        <div class="card-title">
+            🐛 Bug Report
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
-    with st.container(border=True):
+    st.markdown(
+        '<div class="report-card">',
+        unsafe_allow_html=True
+    )
 
-        st.markdown(bug_report)
+    st.markdown(
+        f"""
+        <span class="badge badge-teal">
+            {item['tipo']}
+        </span>
+
+        <span class="badge badge-dark">
+            ID #{item['id']}
+        </span>
+        """,
+        unsafe_allow_html=True
+    )
+
+    bug_text = analysis["bug"]
+
+    # Separar campos del bug report
+    campos_bug = [
+        "Problema:",
+        "Comportamiento observado:",
+        "Comportamiento esperado:",
+        "Impacto:",
+        "Severidad:"
+    ]
+
+    for i, campo in enumerate(campos_bug):
+
+        siguiente = (
+            campos_bug[i + 1]
+            if i + 1 < len(campos_bug)
+            else None
+        )
+
+        inicio = bug_text.find(campo)
+
+        if inicio != -1:
+
+            inicio += len(campo)
+
+            if siguiente:
+
+                fin = bug_text.find(
+                    siguiente,
+                    inicio
+                )
+
+                contenido = (
+                    bug_text[inicio:fin]
+                    if fin != -1
+                    else bug_text[inicio:]
+                )
+
+            else:
+
+                contenido = bug_text[inicio:]
+
+            st.markdown(
+                f"""
+                <div class="field-label">
+                    {campo.replace(":", "")}
+                </div>
+
+                <div class="field-value">
+                    {contenido.strip()}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    st.markdown(
+        "</div>",
+        unsafe_allow_html=True
+    )
 
 
 # ==========================================
-# DERECHA — ANÁLISIS
+# ANÁLISIS IA
 # ==========================================
 
 with right:
 
     st.markdown(
-        '<div class="section-title">🧠 Análisis de IA</div>',
+        """
+        <div class="card-title">
+            🧠 Análisis de IA
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
-    with st.container(border=True):
+    st.markdown(
+        '<div class="analysis-card">',
+        unsafe_allow_html=True
+    )
 
-        st.markdown("### 💡 Insights")
+    # INSIGHTS
 
-        st.markdown(insights)
+    st.markdown(
+        '<div class="section-title">💡 Insights</div>',
+        unsafe_allow_html=True
+    )
 
-    with st.container(border=True):
+    st.markdown(
+        analysis["insights"]
+    )
 
-        st.markdown("### 🔎 Supuestos e hipótesis")
+    st.divider()
 
-        st.markdown(supuestos)
+    # INFORMACIÓN FALTANTE
 
-    with st.container(border=True):
+    st.markdown(
+        '<div class="section-title">🔎 Información faltante</div>',
+        unsafe_allow_html=True
+    )
 
-        st.markdown("### 🔗 Relación con otros reportes")
+    st.markdown(
+        analysis["faltante"]
+    )
 
-        st.markdown(relaciones)
+    st.divider()
 
-    with st.container(border=True):
+    # SUPUESTOS
 
-        st.markdown("### 📋 Información faltante")
+    st.markdown(
+        '<div class="section-title">🔍 Supuestos e hipótesis</div>',
+        unsafe_allow_html=True
+    )
 
-        st.markdown(informacion_faltante)
+    st.markdown(
+        analysis["supuestos"]
+    )
 
+    st.divider()
 
-# ==========================================
-# OPORTUNIDAD
-# ==========================================
+    # RELACIONES
 
-st.markdown("---")
+    st.markdown(
+        '<div class="section-title">🔗 Relación con otros reportes</div>',
+        unsafe_allow_html=True
+    )
 
-with st.container(border=True):
+    st.markdown(
+        analysis["relaciones"]
+    )
 
-    st.markdown("### 🚀 Oportunidad de producto")
+    st.divider()
 
-    st.markdown(oportunidad)
+    # OPORTUNIDAD
 
+    st.markdown(
+        '<div class="section-title">🚀 Oportunidad de producto</div>',
+        unsafe_allow_html=True
+    )
 
-# ==========================================
-# ACCIONES
-# ==========================================
+    st.markdown(
+        analysis["oportunidad"]
+    )
 
-st.markdown("---")
-
-st.markdown("### Acciones")
-
-col1, col2, col3, col4 = st.columns(4)
-
-
-# ==========================================
-# ENVIAR BUG REPORT
-# ==========================================
-
-with col1:
-
-    if st.button(
-        "🐛 Enviar bug report",
-        use_container_width=True
-    ):
-
-        st.success(
-            "Bug report enviado al equipo."
-        )
-
-
-# ==========================================
-# EDITAR
-# ==========================================
-
-with col2:
-
-    if st.button(
-        "✏️ Editar",
-        use_container_width=True
-    ):
-
-        st.session_state.editing_report = True
-
-
-# ==========================================
-# ADJUNTAR ANÁLISIS
-# ==========================================
-
-with col3:
-
-    if st.button(
-        "📎 Adjuntar análisis",
-        use_container_width=True
-    ):
-
-        st.success(
-            "Análisis adjuntado al bug report."
-        )
-
-
-# ==========================================
-# DESCARGAR
-# ==========================================
-
-with col4:
-
-    st.download_button(
-        "⬇️ Descargar",
-        data=analysis,
-        file_name=f"analisis_reporte_{item['id']}.txt",
-        mime="text/plain",
-        use_container_width=True
+    st.markdown(
+        "</div>",
+        unsafe_allow_html=True
     )
 
 
 # ==========================================
-# EDITOR
+# EDITAR + ADJUNTAR
 # ==========================================
 
-if st.session_state.get("editing_report", False):
+st.markdown(
+    '<div class="action-divider"></div>',
+    unsafe_allow_html=True
+)
+
+edit_col, attach_col = st.columns([1, 3])
+
+
+with edit_col:
+
+    edit_mode = st.button(
+        "✏️ Editar",
+        use_container_width=True
+    )
+
+
+with attach_col:
+
+    st.toggle(
+        "Adjuntar análisis",
+        key="attach_analysis",
+        help=(
+            "Si está activado, el envío incluirá "
+            "Insights, información faltante, hipótesis, "
+            "relaciones y oportunidad."
+        )
+    )
+
+
+# ==========================================
+# FORMULARIO DE EDICIÓN
+# ==========================================
+
+if edit_mode:
 
     st.markdown("---")
 
-    st.markdown("### Editar Bug Report")
-
-    edited_bug = st.text_area(
-        "Puedes modificar el reporte antes de enviarlo.",
-        value=bug_report,
-        height=300
+    st.markdown(
+        "### ✏️ Editar Bug Report"
     )
 
-    col1, col2 = st.columns(2)
+    edited_problem = st.text_area(
+        "Problema",
+        value=analysis["bug"],
+        height=180
+    )
 
-    with col1:
+    edited_insights = st.text_area(
+        "Insights",
+        value=analysis["insights"],
+        height=150
+    )
+
+    edited_supuestos = st.text_area(
+        "Supuestos e hipótesis",
+        value=analysis["supuestos"],
+        height=150
+    )
+
+    edited_relaciones = st.text_area(
+        "Relación con otros reportes",
+        value=analysis["relaciones"],
+        height=150
+    )
+
+    edited_oportunidad = st.text_area(
+        "Oportunidad de producto",
+        value=analysis["oportunidad"],
+        height=150
+    )
+
+    save_col, cancel_col = st.columns(2)
+
+    with save_col:
 
         if st.button(
             "Guardar cambios",
@@ -612,21 +844,355 @@ if st.session_state.get("editing_report", False):
             use_container_width=True
         ):
 
-            st.session_state.edited_bug_report = edited_bug
-            st.session_state.editing_report = False
+            st.session_state[analysis_key] = {
+                "bug": edited_problem,
+                "insights": edited_insights,
+                "faltante": analysis["faltante"],
+                "supuestos": edited_supuestos,
+                "relaciones": edited_relaciones,
+                "oportunidad": edited_oportunidad
+            }
 
             st.success(
-                "Cambios guardados."
+                "Cambios guardados correctamente."
             )
 
             st.rerun()
 
-    with col2:
+    with cancel_col:
 
         if st.button(
             "Cancelar",
             use_container_width=True
         ):
 
-            st.session_state.editing_report = False
             st.rerun()
+
+
+# ==========================================
+# PDF
+# ==========================================
+
+def crear_pdf():
+
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=45,
+        leftMargin=45,
+        topMargin=45,
+        bottomMargin=45
+    )
+
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        "TitleCustom",
+        parent=styles["Title"],
+        fontSize=24,
+        leading=28,
+        textColor=colors.HexColor("#17213a"),
+        spaceAfter=8
+    )
+
+    subtitle_style = ParagraphStyle(
+        "SubtitleCustom",
+        parent=styles["Normal"],
+        fontSize=10,
+        textColor=colors.HexColor("#687080"),
+        spaceAfter=20
+    )
+
+    section_style = ParagraphStyle(
+        "SectionCustom",
+        parent=styles["Heading2"],
+        fontSize=15,
+        leading=18,
+        textColor=colors.HexColor("#17213a"),
+        spaceBefore=14,
+        spaceAfter=8
+    )
+
+    body_style = ParagraphStyle(
+        "BodyCustom",
+        parent=styles["BodyText"],
+        fontSize=10,
+        leading=15,
+        textColor=colors.HexColor("#333b4a"),
+        spaceAfter=8
+    )
+
+    small_style = ParagraphStyle(
+        "SmallCustom",
+        parent=styles["Normal"],
+        fontSize=9,
+        textColor=colors.HexColor("#687080"),
+        spaceAfter=5
+    )
+
+    story = []
+
+    story.append(
+        Paragraph(
+            "Alegra Insight",
+            title_style
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Bug Report generado a partir de análisis con IA",
+            subtitle_style
+        )
+    )
+
+    # Información del reporte
+
+    info_data = [
+        [
+            Paragraph("<b>Reporte</b>", small_style),
+            Paragraph(f"#{item['id']}", body_style)
+        ],
+        [
+            Paragraph("<b>Tipo</b>", small_style),
+            Paragraph(item["tipo"], body_style)
+        ],
+        [
+            Paragraph("<b>País</b>", small_style),
+            Paragraph(item["pais"], body_style)
+        ],
+        [
+            Paragraph("<b>Urgencia</b>", small_style),
+            Paragraph(item["urgencia"], body_style)
+        ],
+    ]
+
+    info_table = Table(
+        info_data,
+        colWidths=[90, 390]
+    )
+
+    info_table.setStyle(
+        TableStyle([
+            (
+                "BACKGROUND",
+                (0, 0),
+                (0, -1),
+                colors.HexColor("#f1f7f7")
+            ),
+            (
+                "BOX",
+                (0, 0),
+                (-1, -1),
+                0.5,
+                colors.HexColor("#dce5e7")
+            ),
+            (
+                "INNERGRID",
+                (0, 0),
+                (-1, -1),
+                0.3,
+                colors.HexColor("#e5e7eb")
+            ),
+            (
+                "VALIGN",
+                (0, 0),
+                (-1, -1),
+                "TOP"
+            ),
+            (
+                "LEFTPADDING",
+                (0, 0),
+                (-1, -1),
+                10
+            ),
+            (
+                "RIGHTPADDING",
+                (0, 0),
+                (-1, -1),
+                10
+            ),
+            (
+                "TOPPADDING",
+                (0, 0),
+                (-1, -1),
+                7
+            ),
+            (
+                "BOTTOMPADDING",
+                (0, 0),
+                (-1, -1),
+                7
+            ),
+        ])
+    )
+
+    story.append(info_table)
+
+    story.append(Spacer(1, 20))
+
+    # Bug report
+
+    story.append(
+        Paragraph(
+            "🐛 Bug Report",
+            section_style
+        )
+    )
+
+    story.append(
+        Paragraph(
+            analysis["bug"].replace("\n", "<br/>"),
+            body_style
+        )
+    )
+
+    # Solo adjuntar análisis si el toggle está activo
+
+    if st.session_state.attach_analysis:
+
+        story.append(
+            Paragraph(
+                "🧠 Análisis de IA",
+                section_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                "<b>Insights</b>",
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                analysis["insights"].replace(
+                    "\n",
+                    "<br/>"
+                ),
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                "<b>Información faltante</b>",
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                analysis["faltante"].replace(
+                    "\n",
+                    "<br/>"
+                ),
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                "<b>Supuestos e hipótesis</b>",
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                analysis["supuestos"].replace(
+                    "\n",
+                    "<br/>"
+                ),
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                "<b>Relación con otros reportes</b>",
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                analysis["relaciones"].replace(
+                    "\n",
+                    "<br/>"
+                ),
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                "<b>Oportunidad de producto</b>",
+                body_style
+            )
+        )
+
+        story.append(
+            Paragraph(
+                analysis["oportunidad"].replace(
+                    "\n",
+                    "<br/>"
+                ),
+                body_style
+            )
+        )
+
+    doc.build(story)
+
+    buffer.seek(0)
+
+    return buffer
+
+
+# ==========================================
+# ACCIONES PRINCIPALES
+# ==========================================
+
+st.markdown(
+    '<div class="action-divider"></div>',
+    unsafe_allow_html=True
+)
+
+send_col, pdf_col = st.columns([1, 1])
+
+
+with send_col:
+
+    if st.button(
+        "🚀 Enviar bug report",
+        use_container_width=True,
+        type="primary"
+    ):
+
+        if st.session_state.attach_analysis:
+
+            st.success(
+                "Bug report enviado con el análisis adjunto."
+            )
+
+        else:
+
+            st.success(
+                "Bug report enviado correctamente."
+            )
+
+
+with pdf_col:
+
+    pdf_file = crear_pdf()
+
+    st.download_button(
+        label="📄 Descargar PDF",
+        data=pdf_file,
+        file_name=f"alegra_bug_report_{item['id']}.pdf",
+        mime="application/pdf",
+        use_container_width=True
+    )
