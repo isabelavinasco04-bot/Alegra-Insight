@@ -527,33 +527,39 @@ if analysis_key not in st.session_state:
         "Analizando reporte y buscando patrones..."
     ):
 
-           try:
-    
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt
-        )
-    
-        if response and response.text:
-    
-            analysis = response.text
-    
-            st.session_state.analysis_result = analysis
-    
-        else:
-    
-            st.error("Gemini no devolvió un análisis.")
-    
+        try:
+
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt
+            )
+
+            if response and response.text:
+
+                analysis = response.text
+
+                st.session_state[analysis_key] = analysis
+
+            else:
+
+                st.error(
+                    "Gemini no devolvió un análisis."
+                )
+
         except Exception as e:
-    
-            st.error("No pudimos completar el análisis.")
-        
-            st.error(f"Error de Gemini: {e}")
-        
+
+            st.error(
+                "No pudimos completar el análisis."
+            )
+
+            st.error(
+                f"Error de Gemini: {e}"
+            )
+
             st.exception(e)
-    
-    
-    analysis = st.session_state[analysis_key]
+
+
+analysis = st.session_state[analysis_key]
 
 
 # ==========================================
