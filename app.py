@@ -99,9 +99,20 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.page_link(
-        "app.py",
-        label="⌂  Inicio"
+    st.markdown(
+    """
+    <div style="
+        background-color: #dff7f3;
+        color: #17213a;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 6px;
+        font-weight: 500;
+    ">
+        ⌂ &nbsp; Inicio
+    </div>
+    """,
+    unsafe_allow_html=True
     )
 
     st.page_link(
