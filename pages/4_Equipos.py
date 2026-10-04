@@ -1,6 +1,21 @@
 import streamlit as st
-import textwrap
 from data import ALL_FEEDBACK
+
+
+# ==========================================
+# CONFIGURACIÓN
+# ==========================================
+
+st.set_page_config(
+    page_title="Equipos | Alegra Insight",
+    page_icon="Logo_pequeño_alegra.webp",
+    layout="wide"
+)
+
+
+# ==========================================
+# MIEMBROS DEL EQUIPO
+# ==========================================
 
 TEAM_MEMBERS = [
     {
@@ -23,19 +38,9 @@ TEAM_MEMBERS = [
     }
 ]
 
-# ==========================================
-# CONFIGURACIÓN
-# ==========================================
-
-st.set_page_config(
-    page_title="Equipos | Alegra Insight",
-    page_icon="Logo_pequeño_alegra.webp",
-    layout="wide"
-)
-
 
 # ==========================================
-# DATOS DE EJEMPLO
+# REPORTES DE EJEMPLO
 # ==========================================
 
 TEAM_REPORTS = [
@@ -102,7 +107,8 @@ TEAM_REPORTS = [
 # ESTILOS
 # ==========================================
 
-st.markdown("""
+st.markdown(
+    """
 <style>
 
 .stApp {
@@ -166,6 +172,7 @@ h1, h2, h3 {
     justify-content: center;
     font-weight: 700;
     font-size: 17px;
+    flex-shrink: 0;
 }
 
 
@@ -285,7 +292,9 @@ hr {
 }
 
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True
+)
 
 
 # ==========================================
@@ -295,7 +304,6 @@ hr {
 header_col1, header_col2 = st.columns([5, 1])
 
 with header_col1:
-
     st.title("Equipos")
 
     st.markdown(
@@ -306,7 +314,6 @@ with header_col1:
     )
 
 with header_col2:
-
     if st.button(
         "＋ Agregar nuevo miembro",
         use_container_width=True,
@@ -316,7 +323,7 @@ with header_col2:
 
 
 # ==========================================
-# AGREGAR MIEMBRO
+# FORMULARIO NUEVO MIEMBRO
 # ==========================================
 
 if "show_member_form" not in st.session_state:
@@ -332,14 +339,12 @@ if st.session_state.show_member_form:
         col1, col2 = st.columns(2)
 
         with col1:
-
             nombre = st.text_input(
                 "Nombre",
                 placeholder="Ej. Laura"
             )
 
         with col2:
-
             rol = st.selectbox(
                 "Rol",
                 [
@@ -365,7 +370,6 @@ if st.session_state.show_member_form:
                     )
 
                     st.session_state.show_member_form = False
-
                     st.rerun()
 
                 else:
@@ -382,7 +386,6 @@ if st.session_state.show_member_form:
             ):
 
                 st.session_state.show_member_form = False
-
                 st.rerun()
 
 
@@ -417,28 +420,16 @@ total_review = len([
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric(
-        "En progreso",
-        total_progress
-    )
+    st.metric("En progreso", total_progress)
 
 with col2:
-    st.metric(
-        "Resueltos",
-        total_resolved
-    )
+    st.metric("Resueltos", total_resolved)
 
 with col3:
-    st.metric(
-        "Pendientes",
-        total_pending
-    )
+    st.metric("Pendientes", total_pending)
 
 with col4:
-    st.metric(
-        "Necesitan revisión",
-        total_review
-    )
+    st.metric("Necesitan revisión", total_review)
 
 
 st.markdown("---")
@@ -469,130 +460,142 @@ def mostrar_miembro(miembro):
     ]
 
     iniciales = "".join(
-        [
-            parte[0]
-            for parte in miembro["nombre"].split()
-        ]
+        parte[0]
+        for parte in miembro["nombre"].split()
     ).upper()
 
-    with st.container():
 
-        st.markdown(
-            textwrap.dedent(
-                f"""
-        <div class="member-card">
+    # ------------------------------
+    # CABECERA DE LA CARD
+    # ------------------------------
 
-            <div style="
-                display:flex;
-                align-items:center;
-                gap:14px;
-                margin-bottom:18px;
-            ">
+    st.markdown(
+        f"""
+<div class="member-card">
 
-                <div class="avatar">
-                    {iniciales}
-                </div>
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:14px;
+        margin-bottom:18px;
+    ">
 
-                <div>
+        <div class="avatar">
+            {iniciales}
+        </div>
 
-                    <div style="
-                        color:#17213a;
-                        font-size:18px;
-                        font-weight:700;
-                    ">
-                        {miembro["nombre"]}
-                    </div>
-
-                    <div style="
-                        color:#687080;
-                        font-size:13px;
-                        margin-top:3px;
-                    ">
-                        {miembro["rol"]} · {miembro["estado"]}
-                    </div>
-
-                </div>
-
-            </div>
+        <div>
 
             <div style="
                 color:#17213a;
-                font-size:13px;
+                font-size:18px;
                 font-weight:700;
-                margin-bottom:8px;
             ">
-                Reportes asignados · {len(reportes)}
+                {miembro["nombre"]}
             </div>
-                """
-            ),
-            unsafe_allow_html=True
+
+            <div style="
+                color:#687080;
+                font-size:13px;
+                margin-top:3px;
+            ">
+                {miembro["rol"]} · {miembro["estado"]}
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="
+        color:#17213a;
+        font-size:13px;
+        font-weight:700;
+        margin-bottom:8px;
+    ">
+        Reportes asignados · {len(reportes)}
+    </div>
+""",
+        unsafe_allow_html=True
+    )
+
+
+    # ------------------------------
+    # REPORTES
+    # ------------------------------
+
+    if reportes:
+
+        for reporte in reportes:
+
+            if reporte["urgencia"] == "Alta":
+                urgency_class = "badge-high"
+
+            elif reporte["urgencia"] == "Media":
+                urgency_class = "badge-medium"
+
+            else:
+                urgency_class = "badge-low"
+
+
+            if reporte["estado"] == "En progreso":
+                status_class = "badge-progress"
+
+            elif reporte["estado"] == "Pendiente":
+                status_class = "badge-pending"
+
+            elif reporte["estado"] == "En revisión":
+                status_class = "badge-review"
+
+            else:
+                status_class = "badge-resolved"
+
+
+            st.markdown(
+                f"""
+<div class="report-row">
+
+    <div class="report-title">
+        {reporte["titulo"]}
+    </div>
+
+    <div class="report-meta">
+        {reporte["pais"]}
+    </div>
+
+    <div style="
+        margin-top:8px;
+        display:flex;
+        gap:6px;
+    ">
+
+        <span class="badge {urgency_class}">
+            {reporte["urgencia"]}
+        </span>
+
+        <span class="badge {status_class}">
+            {reporte["estado"]}
+        </span>
+
+    </div>
+
+</div>
+""",
+                unsafe_allow_html=True
             )
 
-        if reportes:
+    else:
 
-            for reporte in reportes:
-
-                if reporte["urgencia"] == "Alta":
-                    urgency_class = "badge-high"
-                elif reporte["urgencia"] == "Media":
-                    urgency_class = "badge-medium"
-                else:
-                    urgency_class = "badge-low"
-
-                if reporte["estado"] == "En progreso":
-                    status_class = "badge-progress"
-                elif reporte["estado"] == "Pendiente":
-                    status_class = "badge-pending"
-                elif reporte["estado"] == "En revisión":
-                    status_class = "badge-review"
-                else:
-                    status_class = "badge-resolved"
-
-               st.markdown(
-                    textwrap.dedent(
-                        f"""
-                        <div class="report-row">
-                
-                            <div class="report-title">
-                                {reporte["titulo"]}
-                            </div>
-                
-                            <div class="report-meta">
-                                {reporte["pais"]}
-                            </div>
-                
-                            <div style="
-                                margin-top:8px;
-                                display:flex;
-                                gap:6px;
-                            ">
-                
-                                <span class="badge {urgency_class}">
-                                    {reporte["urgencia"]}
-                                </span>
-                
-                                <span class="badge {status_class}">
-                                    {reporte["estado"]}
-                                </span>
-                
-                            </div>
-                
-                        </div>
-                        """
-                    ),
-                    unsafe_allow_html=True
-                )
-
-        else:
-
-            st.caption(
-                "No hay reportes asignados."
-            )
-
-        st.markdown(
-            "</div>",
-            unsafe_allow_html=True
+        st.caption(
+            "No hay reportes asignados."
         )
+
+
+    # Cerrar card
+
+    st.markdown(
+        "</div>",
+        unsafe_allow_html=True
+    )
 
 
 # ==========================================
