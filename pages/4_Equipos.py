@@ -1,7 +1,26 @@
 import streamlit as st
-import data
+from data import ALL_FEEDBACK
 
-st.write(data.TEAM_MEMBERS)
+TEAM_MEMBERS = [
+    {
+        "id": 1,
+        "nombre": "Juan",
+        "rol": "Desarrollador",
+        "estado": "Disponible"
+    },
+    {
+        "id": 2,
+        "nombre": "Carlos",
+        "rol": "Desarrollador",
+        "estado": "Ocupado"
+    },
+    {
+        "id": 3,
+        "nombre": "Sara",
+        "rol": "Diseñadora",
+        "estado": "Disponible"
+    }
+]
 
 # ==========================================
 # CONFIGURACIÓN
