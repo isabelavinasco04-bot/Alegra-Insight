@@ -411,7 +411,5 @@ for item in filtered_data:
 
                 st.session_state.selected_feedback = item
 
-                st.switch_page(
-                    "pages/5_Analisis.py"
-                )
+                st.switch_page("5_Analisis.py")
 
