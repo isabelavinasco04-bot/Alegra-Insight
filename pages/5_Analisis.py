@@ -1212,12 +1212,12 @@ if "show_assignment" not in st.session_state:
     st.session_state.show_assignment = False
 
 
+# ==========================================
+# BOTONES PRINCIPALES
+# ==========================================
+
 send_col, pdf_col = st.columns([1, 1])
 
-
-# ==========================================
-# BOTÓN ENVIAR BUG REPORT
-# ==========================================
 
 with send_col:
 
@@ -1229,10 +1229,6 @@ with send_col:
         st.session_state.show_assignment = True
         st.rerun()
 
-
-# ==========================================
-# BOTÓN DESCARGAR PDF
-# ==========================================
 
 with pdf_col:
 
@@ -1249,47 +1245,18 @@ with pdf_col:
 
 # ==========================================
 # PANEL DE ASIGNACIÓN
-# SOLO APARECE AL DAR CLIC EN ENVIAR
+# SOLO APARECE AL DAR ENVIAR
 # ==========================================
 
 if st.session_state.show_assignment:
 
-            st.markdown(
-            """
-        <div style="
-            border:1px solid #dce2e8;
-            border-radius:12px;
-            padding:24px;
-            margin-top:24px;
-            margin-bottom:16px;
-            background:white;
-        ">
-        
-            <div style="
-                color:#17213a;
-                font-size:24px;
-                font-weight:700;
-                margin-bottom:8px;
-        ">
-            👥 ¿A quién deseas asignar este bug report?
-            </div>
-        
-            <div style="
-                color:#687080;
-                font-size:14px;
-        ">
-            Selecciona al miembro del equipo que se encargará de revisar este problema.
-            </div>
-        
-        </div>
-        """,
-            unsafe_allow_html=True
-        )
+    st.divider()
 
+    st.subheader("👥 ¿A quién deseas asignar este bug report?")
 
-    # ==========================================
-    # SELECCIONAR MIEMBRO
-    # ==========================================
+    st.caption(
+        "Selecciona al miembro del equipo que se encargará de revisar este problema."
+    )
 
     opciones_equipo = [
         f"{miembro['nombre']} · {miembro['rol']}"
@@ -1302,35 +1269,34 @@ if st.session_state.show_assignment:
         key=f"assigned_member_{item['id']}"
     )
 
-
     miembro_seleccionado = next(
         miembro
         for miembro in st.session_state.team_members
         if f"{miembro['nombre']} · {miembro['rol']}" == seleccionado
     )
 
-
-    # ==========================================
-    # BOTONES
-    # ==========================================
-
     col_confirmar, col_cancelar = st.columns([1, 1])
 
+
+    # ==========================================
+    # CONFIRMAR ASIGNACIÓN
+    # ==========================================
 
     with col_confirmar:
 
         if st.button(
             "✓ Asignar reporte",
             type="primary",
-            use_container_width=True,
-            key=f"confirm_assignment_{item['id']}"
+            use_container_width=True
         ):
+
+            if "reportes" not in miembro_seleccionado:
+                miembro_seleccionado["reportes"] = []
 
             reporte_ya_asignado = any(
                 reporte.get("id") == item["id"]
                 for reporte in miembro_seleccionado["reportes"]
             )
-
 
             if not reporte_ya_asignado:
 
@@ -1355,7 +1321,6 @@ if st.session_state.show_assignment:
                     nuevo_reporte
                 )
 
-
             st.session_state.show_assignment = False
 
             st.session_state.last_assignment = (
@@ -1365,116 +1330,15 @@ if st.session_state.show_assignment:
             st.rerun()
 
 
-    with col_cancelar:
-
-        if st.button(
-            "Cancelar",
-            use_container_width=True,
-            key=f"cancel_assignment_{item['id']}"
-        ):
-
-            st.session_state.show_assignment = False
-
-            st.rerun()
-
-
-# ==========================================
-# CONFIRMACIÓN
-# ==========================================
-
-if "last_assignment" in st.session_state:
-
-    st.success(
-        f"✓ Bug report enviado y asignado a "
-        f"{st.session_state.last_assignment}."
-    )
-
-    del st.session_state.last_assignment
-    # --------------------------------------
-    # SELECCIONAR MIEMBRO
-    # --------------------------------------
-
-    opciones_equipo = [
-        f"{miembro['nombre']} · {miembro['rol']}"
-        for miembro in st.session_state.team_members
-    ]
-
-
-    seleccionado = st.selectbox(
-        "Miembro del equipo",
-        opciones_equipo,
-        key=f"assigned_member_{item['id']}"
-    )
-
-
-    miembro_seleccionado = next(
-        miembro
-        for miembro in st.session_state.team_members
-        if f"{miembro['nombre']} · {miembro['rol']}" == seleccionado
-    )
-
-
-    # --------------------------------------
-    # BOTONES
-    # --------------------------------------
-
-    col_confirmar, col_cancelar = st.columns([1, 1])
-
-
-    with col_confirmar:
-
-        if st.button(
-            "✓ Asignar reporte",
-            type="primary",
-            use_container_width=True,
-            key=f"confirm_assignment_{item['id']}"
-        ):
-
-            reporte_ya_asignado = any(
-                reporte.get("id") == item["id"]
-                for reporte in miembro_seleccionado["reportes"]
-            )
-
-
-            if not reporte_ya_asignado:
-
-                nuevo_reporte = {
-                    "id": item["id"],
-                    "titulo": (
-                        analysis.get("titulo")
-                        or f"Bug report #{item['id']}"
-                    ),
-                    "urgencia": item.get(
-                        "urgencia",
-                        "Media"
-                    ),
-                    "estado": "Pendiente",
-                    "pais": item.get(
-                        "pais",
-                        "Por confirmar"
-                    )
-                }
-
-                miembro_seleccionado["reportes"].append(
-                    nuevo_reporte
-                )
-
-
-            st.session_state.show_assignment = False
-
-            st.session_state.last_assignment = (
-                miembro_seleccionado["nombre"]
-            )
-
-            st.rerun()
-
+    # ==========================================
+    # CANCELAR
+    # ==========================================
 
     with col_cancelar:
 
         if st.button(
             "Cancelar",
-            use_container_width=True,
-            key=f"cancel_assignment_{item['id']}"
+            use_container_width=True
         ):
 
             st.session_state.show_assignment = False
