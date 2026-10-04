@@ -81,6 +81,11 @@ TEAM_MEMBERS = [
     }
 ]
 
+
+# ==========================================
+# ESTADO DEL EQUIPO
+# ==========================================
+
 if "team_members" not in st.session_state:
     st.session_state.team_members = TEAM_MEMBERS
 
@@ -280,7 +285,9 @@ if st.session_state["show_member_form"]:
 
                 if nuevo_nombre.strip():
 
-                    nuevo_id = len(st.session_state.team_members) + 1
+                    nuevo_id = len(
+                        st.session_state.team_members
+                    ) + 1
 
                     st.session_state.team_members.append(
                         {
@@ -334,17 +341,20 @@ for miembro in st.session_state.team_members:
         todos_los_reportes.append(reporte)
 
 
+# Aceptamos tanto "En progreso" (datos iniciales)
+# como "En proceso" (nuevos reportes asignados)
+
 total_progress = sum(
     1
     for reporte in todos_los_reportes
-    if reporte["estado"] == "En progreso"
+    if reporte["estado"] in ["En progreso", "En proceso"]
 )
 
 
 total_resolved = sum(
     1
     for reporte in todos_los_reportes
-    if reporte["estado"] == "Resuelto"
+    if reporte["estado"] in ["Resuelto", "Terminado"]
 )
 
 
@@ -371,7 +381,7 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
 
     st.metric(
-        "En progreso",
+        "En proceso",
         total_progress
     )
 
@@ -450,30 +460,32 @@ def mostrar_reporte(reporte):
             st.success("🟢 Baja")
 
 
-    # Estado
+    # ==========================================
+    # ESTADO DEL REPORTE
+    # ==========================================
 
-    if reporte["estado"] == "En progreso":
+    if reporte["estado"] in ["En progreso", "En proceso"]:
 
         st.info(
-            "En progreso"
+            "🟡 En proceso"
         )
 
     elif reporte["estado"] == "Pendiente":
 
         st.caption(
-            "Pendiente"
+            "⚪ Pendiente"
         )
 
     elif reporte["estado"] == "En revisión":
 
         st.warning(
-            "En revisión"
+            "🟠 En revisión"
         )
 
-    elif reporte["estado"] == "Resuelto":
+    elif reporte["estado"] in ["Resuelto", "Terminado"]:
 
         st.success(
-            "Resuelto"
+            "🟢 Terminado"
         )
 
 
@@ -571,7 +583,9 @@ with tab_general:
 
     columns = st.columns(2)
 
-    for index, miembro in enumerate(st.session_state.team_members):
+    for index, miembro in enumerate(
+        st.session_state.team_members
+    ):
 
         with columns[index % 2]:
 
@@ -595,7 +609,9 @@ with tab_dev:
 
         columns = st.columns(2)
 
-        for index, miembro in enumerate(desarrolladores):
+        for index, miembro in enumerate(
+            desarrolladores
+        ):
 
             with columns[index % 2]:
 
@@ -625,7 +641,9 @@ with tab_design:
 
         columns = st.columns(2)
 
-        for index, miembro in enumerate(disenadores):
+        for index, miembro in enumerate(
+            disenadores
+        ):
 
             with columns[index % 2]:
 
