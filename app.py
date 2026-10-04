@@ -1,28 +1,14 @@
 import streamlit as st
-from google import genai
-from data import ALL_FEEDBACK
-
 
 # ==========================================
 # CONFIGURACIÓN
 # ==========================================
 
 st.set_page_config(
-    page_title="Alegra AI",
+    page_title="Alegra Insight",
     page_icon="🌿",
     layout="wide"
 )
-
-
-# ==========================================
-# CONEXIÓN CON GEMINI
-# ==========================================
-
-client = genai.Client(
-    api_key=st.secrets["GEMINI_API_KEY"]
-)
-
-GEMINI_MODEL = "gemini-3.8-flash"
 
 
 # ==========================================
@@ -32,19 +18,66 @@ GEMINI_MODEL = "gemini-3.8-flash"
 st.markdown("""
 <style>
 
-.main {
-    background-color: #ffffff;
-}
+    /* Fondo general */
+    .stApp {
+        background-color: #ffffff;
+    }
 
-.block-container {
-    padding-top: 2rem;
-    padding-left: 3rem;
-    padding-right: 3rem;
-}
+    /* Ocultar menú automático de Streamlit */
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
 
-h1 {
-    color: #172554;
-}
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: #f7f8fa;
+    }
+
+    /* Botones de navegación */
+    .nav-title {
+        font-size: 15px;
+        color: #555b66;
+        margin-top: 10px;
+        margin-bottom: 8px;
+    }
+
+    /* Hero */
+    .hero {
+        text-align: center;
+        padding-top: 60px;
+        padding-bottom: 25px;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+        color: #17213a;
+        margin-bottom: 8px;
+    }
+
+    .hero p {
+        font-size: 20px;
+        color: #687080;
+    }
+
+    /* Tarjetas */
+    .card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 24px;
+        min-height: 150px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .card h3 {
+        color: #17213a;
+        margin-bottom: 8px;
+    }
+
+    .card p {
+        color: #687080;
+        line-height: 1.5;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -56,353 +89,164 @@ h1 {
 
 with st.sidebar:
 
-    st.markdown("## 🌿 alegra")
+    st.markdown(
+        """
+        <div style="font-size:25px; font-weight:700;
+        color:#17213a; margin-bottom:35px;">
+        🌿 alegra
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    st.markdown("---")
+    st.page_link(
+        "app.py",
+        label="⌂  Inicio"
+    )
 
-    st.markdown("⌂  Inicio")
-    st.markdown("▣  Buzón")
-    st.markdown("♙  Subir sesión")
-    st.markdown("♧  Equipos")
+    st.page_link(
+        "pages/2_Buzon.py",
+        label="▣  Buzón"
+    )
 
-    st.markdown("---")
+    st.page_link(
+        "pages/3_Sesiones.py",
+        label="♙  Subir sesión"
+    )
 
-    st.caption("Sofía")
-    st.caption("Product Manager")
+    st.page_link(
+        "pages/4_Equipos.py",
+        label="♧  Equipos"
+    )
+
+    st.divider()
+
+    st.markdown(
+        """
+        <div style="color:#687080; font-size:14px;">
+        Sofía<br>
+        <span style="color:#9aa0aa;">Product Manager</span>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 # ==========================================
-# HEADER
+# HOME
 # ==========================================
 
-st.title("Buzón de usuarios")
-
-st.caption(
-    "Todos los comentarios y tickets, organizados y analizados con IA."
+st.markdown(
+    """
+    <div class="hero">
+        <h1>Hola Sofía 👋</h1>
+        <p>¿Cómo quieres trabajar hoy?</p>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
 
 # ==========================================
-# MÉTRICAS
+# PREGUNTA A LA IA
 # ==========================================
 
-col1, col2, col3, col4 = st.columns(4)
+question = st.text_input(
+    "",
+    placeholder="Pregunta a la IA sobre algún reporte...",
+    label_visibility="collapsed"
+)
 
-with col1:
-    st.metric(
-        "Total",
-        len(ALL_FEEDBACK)
-    )
-
-with col2:
-    st.metric(
-        "Reseñas",
-        len([
-            x for x in ALL_FEEDBACK
-            if x["tipo"] == "Reseña"
-        ])
-    )
-
-with col3:
-    st.metric(
-        "Tickets",
-        len([
-            x for x in ALL_FEEDBACK
-            if x["tipo"] == "Ticket"
-        ])
-    )
-
-with col4:
-    st.metric(
-        "Sin analizar",
-        len([
-            x for x in ALL_FEEDBACK
-            if x["estado"] == "Sin analizar"
-        ])
+if question:
+    st.info(
+        "La búsqueda con IA estará disponible próximamente."
     )
 
 
-st.markdown("---")
 # ==========================================
-# FILTROS
+# PREGUNTAS RÁPIDAS
 # ==========================================
 
-col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
+col1, col2, col3 = st.columns(3)
 
 with col1:
 
-    search = st.text_input(
-        "🔎 Buscar",
-        placeholder="Buscar comentario..."
-    )
+    if st.button(
+        "💬 ¿Qué problemas se están reportando?",
+        use_container_width=True
+    ):
+        st.switch_page("pages/2_Buzon.py")
+
 
 with col2:
 
-    countries = sorted(
-        list(set(
-            x["pais"]
-            for x in ALL_FEEDBACK
-        ))
-    )
+    if st.button(
+        "📄 Muéstrame los reportes de facturación",
+        use_container_width=True
+    ):
+        st.switch_page("pages/2_Buzon.py")
 
-    country_filter = st.selectbox(
-        "País",
-        ["Todos"] + countries
-    )
 
 with col3:
 
-    urgency_filter = st.selectbox(
-        "Urgencia",
-        ["Todas", "Alta", "Media", "Baja"]
-    )
-
-with col4:
-
-    status_filter = st.selectbox(
-        "Estado",
-        ["Todos", "Sin analizar", "Analizado"]
-    )
-
-# ==========================================
-# PESTAÑAS
-# ==========================================
-
-tab1, tab2, tab3 = st.tabs([
-    "Todos",
-    "Reseñas",
-    "Tickets"
-])
-
-
-if "tab_selection" not in st.session_state:
-    st.session_state.tab_selection = "Todos"
-
+    if st.button(
+        "👥 ¿Qué está trabajando el equipo?",
+        use_container_width=True
+    ):
+        st.switch_page("pages/4_Equipos.py")
 
 
 # ==========================================
-# FUNCIÓN PARA MOSTRAR CASOS
+# ACCIONES PRINCIPALES
 # ==========================================
 
-def show_feedback(items, view_key):
+st.markdown("<br>", unsafe_allow_html=True)
 
-    filtered_data = items
+col1, col2 = st.columns(2)
 
-    # Buscar
-    if search:
-
-        filtered_data = [
-            x for x in filtered_data
-            if search.lower() in x["comentario"].lower()
-        ]
-
-    # País
-    if country_filter != "Todos":
-
-        filtered_data = [
-            x for x in filtered_data
-            if x["pais"] == country_filter
-        ]
-
-    # Urgencia
-    if urgency_filter != "Todas":
-
-        filtered_data = [
-            x for x in filtered_data
-            if x["urgencia"] == urgency_filter
-        ]
-
-    # Estado
-    if status_filter != "Todos":
-
-        filtered_data = [
-            x for x in filtered_data
-            if x["estado"] == status_filter
-        ]
+with col1:
 
     st.markdown(
-        f"### {len(filtered_data)} resultados"
+        """
+        <div class="card">
+            <h3>＋ Ingresar un nuevo reporte</h3>
+            <p>
+                Pega un comentario, ticket o describe
+                el problema manualmente.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    # ======================================
-    # CASOS
-    # ======================================
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    for item in filtered_data:
-
-        with st.container(border=True):
-
-            col1, col2, col3, col4, col5 = st.columns(
-                [0.5, 4, 1.2, 1.2, 1.3]
-            )
-
-            # Tipo
-            with col1:
-
-                if item["tipo"] == "Ticket":
-                    st.write("🎫")
-                else:
-                    st.write("💬")
-
-            # Comentario
-            with col2:
-
-                st.write(
-                    f"**{item['comentario']}**"
-                )
-
-                st.caption(
-                    f"{item['tipo']} · ID #{item['id']}"
-                )
-
-            # País
-            with col3:
-
-                st.write(item["pais"])
-
-            # Urgencia
-            with col4:
-
-                if item["urgencia"] == "Alta":
-
-                    st.error("🔴 Alta")
-
-                elif item["urgencia"] == "Media":
-
-                    st.warning("🟡 Media")
-
-                else:
-
-                    st.success("🟢 Baja")
-
-            # Estado / botón
-            with col5:
-
-                if item["estado"] == "Sin analizar":
-
-                    st.caption("Sin analizar")
-
-                else:
-
-                    st.success("Analizado")
-
-            # ==================================
-            # BOTÓN IA
-            # ==================================
-
-            if st.button(
-            "Analizar con IA",
-            key=f"analizar_{view_key}_{item['id']}"
-            ):
-
-                with st.spinner(
-                    "Analizando comentario..."
-                ):
-
-                    try:
-
-                        response = client.models.generate_content(
-                            model=GEMINI_MODEL,
-                            contents=f"""
-Eres un Product Manager de Alegra.
-
-Analiza el siguiente comentario de usuario.
-
-COMENTARIO:
-{item['comentario']}
-
-CONTEXTO:
-- Tipo: {item['tipo']}
-- País: {item['pais']}
-- Calificación: {item.get('calificacion', 'No aplica')}
-
-Necesito que identifiques:
-
-1. Problema identificado
-2. Severidad
-3. Impacto
-4. Área afectada
-5. Hipótesis
-6. Información faltante
-
-No inventes información.
-
-Diferencia claramente los hechos
-de las hipótesis.
-
-Si algo no está disponible,
-indica "Por confirmar".
-"""
-                        )
-
-                        if response and response.text:
-
-                            st.success(
-                                "Análisis completado"
-                            )
-
-                            st.markdown(
-                                "### 🧠 Análisis de IA"
-                            )
-
-                            st.write(
-                                response.text
-                            )
-
-                        else:
-
-                            st.warning(
-                                "Gemini no devolvió contenido. "
-                                "Intenta nuevamente."
-                            )
-
-                    except Exception as e:
-
-                        st.error(
-                            "No pudimos analizar este comentario "
-                            "en este momento."
-                        )
-
-                        st.caption(
-                            "Intenta nuevamente en unos segundos."
-                        )
-
-                        st.code(str(e))
+    if st.button(
+        "Ingresar reporte →",
+        use_container_width=True
+    ):
+        st.switch_page("pages/2_Buzon.py")
 
 
-# ==========================================
-# CONTENIDO DE LAS PESTAÑASs
-# ==========================================
+with col2:
 
-with tab1:
-
-    show_feedback(
-        ALL_FEEDBACK,
-        "todos"
+    st.markdown(
+        """
+        <div class="card">
+            <h3>🎙 Subir sesión con cliente</h3>
+            <p>
+                Carga un audio o transcripción para
+                que la IA lo analice.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
+    st.markdown("<br>", unsafe_allow_html=True)
 
-with tab2:
-
-    reviews = [
-        x for x in ALL_FEEDBACK
-        if x["tipo"] == "Reseña"
-    ]
-
-    show_feedback(
-        reviews,
-        "resenas"
-    )
-
-
-with tab3:
-
-    tickets = [
-        x for x in ALL_FEEDBACK
-        if x["tipo"] == "Ticket"
-    ]
-
-    show_feedback(
-        tickets,
-        "tickets"
-    )
+    if st.button(
+        "Subir sesión →",
+        use_container_width=True
+    ):
+        st.switch_page("pages/3_Sesiones.py")
