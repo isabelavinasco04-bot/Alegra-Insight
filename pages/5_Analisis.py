@@ -1271,144 +1271,93 @@ if st.session_state.show_assignment:
         )
 
 
-        # --------------------------------------
-        # SELECCIONAR MIEMBRO
-        # --------------------------------------
+# --------------------------------------
+# SELECCIONAR MIEMBRO
+# --------------------------------------
 
-        opciones_equipo = [
-            f"{miembro['nombre']} · {miembro['rol']}"
-            for miembro in st.session_state.team_members
-        ]
+opciones_equipo = [
+    f"{miembro['nombre']} · {miembro['rol']}"
+    for miembro in st.session_state.team_members
+]
+
+seleccionado = st.selectbox(
+    "Miembro del equipo",
+    opciones_equipo,
+    key=f"assigned_member_{item['id']}"
+)
+
+miembro_seleccionado = next(
+    miembro
+    for miembro in st.session_state.team_members
+    if f"{miembro['nombre']} · {miembro['rol']}" == seleccionado
+)
+
+col_confirmar, col_cancelar = st.columns(2)
 
 
-        seleccionado = st.selectbox(
-            "Miembro del equipo",
-            opciones_equipo,
-            key=f"assigned_member_{item['id']}"
+# --------------------------------------
+# ASIGNAR
+# --------------------------------------
+
+with col_confirmar:
+
+    if st.button(
+        "✓ Asignar reporte",
+        type="primary",
+        use_container_width=True
+    ):
+
+        reporte_ya_asignado = any(
+            reporte.get("id") == item["id"]
+            for reporte in miembro_seleccionado["reportes"]
         )
 
+        if not reporte_ya_asignado:
 
-        # Encontrar miembro seleccionado
-
-        miembro_seleccionado = next(
-            miembro
-            for miembro in st.session_state.team_members
-            if f"{miembro['nombre']} · {miembro['rol']}" == seleccionado
-        )
-
-
-        st.markdown(
-            f"""
-            <div style="
-                background:#f8fafb;
-                border:1px solid #e3e7ed;
-                border-radius:12px;
-                padding:14px 16px;
-                margin-top:8px;
-                margin-bottom:16px;
-            ">
-                <div style="
-                    color:#687080;
-                    font-size:12px;
-                    font-weight:700;
-                    text-transform:uppercase;
-                    margin-bottom:5px;
-                ">
-                    Asignar a
-                </div>
-
-                <div style="
-                    color:#17213a;
-                    font-size:16px;
-                    font-weight:700;
-                ">
-                    {miembro_seleccionado['nombre']}
-                </div>
-
-                <div style="
-                    color:#687080;
-                    font-size:13px;
-                    margin-top:3px;
-                ">
-                    {miembro_seleccionado['rol']}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-
-        col_confirmar, col_cancelar = st.columns([1, 1])
-
-
-        # --------------------------------------
-        # CONFIRMAR
-        # --------------------------------------
-
-        with col_confirmar:
-
-            if st.button(
-                "✓ Asignar reporte",
-                type="primary",
-                use_container_width=True
-            ):
-
-                # Evitar duplicar el mismo reporte
-
-                reporte_ya_asignado = any(
-                    reporte.get("id") == item["id"]
-                    for reporte in miembro_seleccionado["reportes"]
+            nuevo_reporte = {
+                "id": item["id"],
+                "titulo": (
+                    analysis.get("titulo")
+                    or f"Bug report #{item['id']}"
+                ),
+                "urgencia": item.get(
+                    "urgencia",
+                    "Media"
+                ),
+                "estado": "Pendiente",
+                "pais": item.get(
+                    "pais",
+                    "Por confirmar"
                 )
+            }
+
+            miembro_seleccionado["reportes"].append(
+                nuevo_reporte
+            )
+
+        st.session_state.show_assignment = False
+
+        st.session_state.last_assignment = (
+            miembro_seleccionado["nombre"]
+        )
+
+        st.rerun()
 
 
-                if not reporte_ya_asignado:
+# --------------------------------------
+# CANCELAR
+# --------------------------------------
 
-                    nuevo_reporte = {
-                        "id": item["id"],
-                        "titulo": (
-                            analysis.get("titulo")
-                            or f"Bug report #{item['id']}"
-                        ),
-                        "urgencia": item.get(
-                            "urgencia",
-                            "Media"
-                        ),
-                        "estado": "Pendiente",
-                        "pais": item.get(
-                            "pais",
-                            "Por confirmar"
-                        )
-                    }
+with col_cancelar:
 
+    if st.button(
+        "Cancelar",
+        use_container_width=True
+    ):
 
-                    miembro_seleccionado["reportes"].append(
-                        nuevo_reporte
-                    )
+        st.session_state.show_assignment = False
 
-
-                st.session_state.show_assignment = False
-
-                st.session_state.last_assignment = (
-                    miembro_seleccionado["nombre"]
-                )
-
-                st.rerun()
-
-
-        # --------------------------------------
-        # CANCELAR
-        # --------------------------------------
-
-        with col_cancelar:
-
-            if st.button(
-                "Cancelar",
-                use_container_width=True
-            ):
-
-                st.session_state.show_assignment = False
-
-                st.rerun()
+        st.rerun()
 
 
 # ==========================================
