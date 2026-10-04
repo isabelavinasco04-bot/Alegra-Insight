@@ -591,83 +591,77 @@ with left:
         unsafe_allow_html=True
     )
 
-    st.markdown(
-        '<div class="report-card">',
-        unsafe_allow_html=True
-    )
+    with st.container(
+        height=590,
+        border=True
+    ):
 
-    st.markdown(
-        f"""
-        <span class="badge badge-teal">
-            {item['tipo']}
-        </span>
+        st.markdown(
+            f"""
+            <span class="badge badge-teal">
+                {item['tipo']}
+            </span>
 
-        <span class="badge badge-dark">
-            ID #{item['id']}
-        </span>
-        """,
-        unsafe_allow_html=True
-    )
-
-    bug_text = analysis["bug"]
-
-    # Separar campos del bug report
-    campos_bug = [
-        "Problema:",
-        "Comportamiento observado:",
-        "Comportamiento esperado:",
-        "Impacto:",
-        "Severidad:"
-    ]
-
-    for i, campo in enumerate(campos_bug):
-
-        siguiente = (
-            campos_bug[i + 1]
-            if i + 1 < len(campos_bug)
-            else None
+            <span class="badge badge-dark">
+                ID #{item['id']}
+            </span>
+            """,
+            unsafe_allow_html=True
         )
 
-        inicio = bug_text.find(campo)
+        bug_text = analysis["bug"]
 
-        if inicio != -1:
+        campos_bug = [
+            "Problema:",
+            "Comportamiento observado:",
+            "Comportamiento esperado:",
+            "Impacto:",
+            "Severidad:"
+        ]
 
-            inicio += len(campo)
+        for i, campo in enumerate(campos_bug):
 
-            if siguiente:
-
-                fin = bug_text.find(
-                    siguiente,
-                    inicio
-                )
-
-                contenido = (
-                    bug_text[inicio:fin]
-                    if fin != -1
-                    else bug_text[inicio:]
-                )
-
-            else:
-
-                contenido = bug_text[inicio:]
-
-            st.markdown(
-                f"""
-                <div class="field-label">
-                    {campo.replace(":", "")}
-                </div>
-
-                <div class="field-value">
-                    {contenido.strip()}
-                </div>
-                """,
-                unsafe_allow_html=True
+            siguiente = (
+                campos_bug[i + 1]
+                if i + 1 < len(campos_bug)
+                else None
             )
 
-    st.markdown(
-        "</div>",
-        unsafe_allow_html=True
-    )
+            inicio = bug_text.find(campo)
+
+            if inicio != -1:
+
+                inicio += len(campo)
+
+                if siguiente:
+
+                    fin = bug_text.find(
+                        siguiente,
+                        inicio
+                    )
+
+                    contenido = (
+                        bug_text[inicio:fin]
+                        if fin != -1
+                        else bug_text[inicio:]
+                    )
+
+                else:
+
+                    contenido = bug_text[inicio:]
+
+                st.markdown(
+                    f"""
+                    <div class="field-label">
+                        {campo.replace(":", "")}
+                    </div>
+
+                    <div class="field-value">
+                        {contenido.strip()}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
 
 
 # ==========================================
@@ -685,80 +679,97 @@ with right:
         unsafe_allow_html=True
     )
 
-    st.markdown(
-        '<div class="analysis-card">',
-        unsafe_allow_html=True
-    )
+    with st.container(
+        height=590,
+        border=True
+    ):
 
-    # INSIGHTS
+        # INSIGHTS
 
-    st.markdown(
-        '<div class="section-title">💡 Insights</div>',
-        unsafe_allow_html=True
-    )
+        st.markdown(
+            """
+            <div class="section-title">
+                💡 Insights
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    st.markdown(
-        analysis["insights"]
-    )
+        st.markdown(
+            analysis["insights"]
+        )
 
-    st.divider()
-
-    # INFORMACIÓN FALTANTE
-
-    st.markdown(
-        '<div class="section-title">🔎 Información faltante</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        analysis["faltante"]
-    )
-
-    st.divider()
-
-    # SUPUESTOS
-
-    st.markdown(
-        '<div class="section-title">🔍 Supuestos e hipótesis</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        analysis["supuestos"]
-    )
-
-    st.divider()
-
-    # RELACIONES
-
-    st.markdown(
-        '<div class="section-title">🔗 Relación con otros reportes</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        analysis["relaciones"]
-    )
-
-    st.divider()
-
-    # OPORTUNIDAD
-
-    st.markdown(
-        '<div class="section-title">🚀 Oportunidad de producto</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        analysis["oportunidad"]
-    )
-
-    st.markdown(
-        "</div>",
-        unsafe_allow_html=True
-    )
+        st.divider()
 
 
+        # INFORMACIÓN FALTANTE
+
+        st.markdown(
+            """
+            <div class="section-title">
+                🔎 Información faltante
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            analysis["faltante"]
+        )
+
+        st.divider()
+
+
+        # SUPUESTOS
+
+        st.markdown(
+            """
+            <div class="section-title">
+                🔍 Supuestos e hipótesis
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            analysis["supuestos"]
+        )
+
+        st.divider()
+
+
+        # RELACIONES
+
+        st.markdown(
+            """
+            <div class="section-title">
+                🔗 Relación con otros reportes
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            analysis["relaciones"]
+        )
+
+        st.divider()
+
+
+        # OPORTUNIDAD
+
+        st.markdown(
+            """
+            <div class="section-title">
+                🚀 Oportunidad de producto
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        st.markdown(
+            analysis["oportunidad"]
+        )
 # ==========================================
 # EDITAR + ADJUNTAR
 # ==========================================
