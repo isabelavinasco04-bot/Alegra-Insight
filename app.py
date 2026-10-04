@@ -7,7 +7,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Alegra Insight",
-    page_icon="Logo_de_Alegra.png",
+    page_icon="Logo_pequeño_alegra.webp",
     layout="wide"
 )
 
@@ -59,20 +59,13 @@ pg = st.navigation(
 
 with st.sidebar:
 
-    st.markdown(
-        """
-        <div style="
-            font-size:25px;
-            font-weight:700;
-            color:#17213a;
-            margin-bottom:35px;
-        ">
-            🌿 alegra
-        </div>
-        """,
-        unsafe_allow_html=True
+    # Logo oficial de Alegra
+    st.image(
+        "Logo_de_Alegra.png",
+        width=130
     )
 
+    # Navegación
     st.page_link(
         home_page,
         label="Inicio"
@@ -95,6 +88,7 @@ with st.sidebar:
 
     st.divider()
 
+    # Usuario
     st.markdown(
         """
         <div style="
