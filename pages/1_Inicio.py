@@ -174,6 +174,23 @@ st.markdown(
 
 if "quick_question" not in st.session_state:
     st.session_state.quick_question = None
+
+# ==========================================
+# BUSCADOR
+# ==========================================
+
+question = st.text_input(
+    "",
+    value=st.session_state.quick_question or "",
+    placeholder="Pregunta a la IA sobre algún reporte...",
+    label_visibility="collapsed"
+)
+
+
+# Después de mostrar la pregunta rápida,
+# la limpiamos para que no se quede pegada.
+if st.session_state.quick_question is not None:
+    st.session_state.quick_question = None
 # ==========================================
 # ACCIONES PRINCIPALES
 # ==========================================
