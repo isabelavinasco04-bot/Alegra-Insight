@@ -378,7 +378,10 @@ indica "Por confirmar".
 
 with tab1:
 
-    show_feedback(ALL_FEEDBACK)
+    show_feedback(
+        ALL_FEEDBACK,
+        "todos"
+    )
 
 
 with tab2:
@@ -388,13 +391,23 @@ with tab2:
         if x["tipo"] == "Reseña"
     ]
 
-    show_feedback(reviews)
+    show_feedback(
+        reviews,
+        "resenas"
+    )
 
 
 with tab3:
 
     tickets = [
         x for x in ALL_FEEDBACK
+        if x["tipo"] == "Ticket"
+    ]
+
+    show_feedback(
+        tickets,
+        "tickets"
+    )
         if x["tipo"] == "Ticket"
     ]
 
