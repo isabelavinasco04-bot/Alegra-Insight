@@ -256,6 +256,52 @@ st.markdown("<br>", unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 
 
+with col1:
+
+    st.markdown(
+        """
+        <div class="card">
+            <h3>＋ Ingresar un nuevo reporte</h3>
+            <p>
+                Pega un comentario, ticket o describe
+                el problema manualmente.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if st.button(
+        "Ingresar un nuevo reporte",
+        key="nuevo_reporte",
+        use_container_width=True
+    ):
+        st.switch_page("pages/2_Buzon.py")
+
+
+with col2:
+
+    st.markdown(
+        """
+        <div class="card">
+            <h3>🎙 Subir sesión con cliente</h3>
+            <p>
+                Carga un audio o transcripción para
+                que la IA lo analice.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if st.button(
+        "Subir sesión con cliente",
+        key="subir_sesion",
+        use_container_width=True
+    ):
+        st.switch_page("pages/3_Sesiones.py")
+
+
 # ==========================================
 # INGRESAR REPORTE
 # ==========================================
