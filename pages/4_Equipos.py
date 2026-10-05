@@ -693,18 +693,9 @@ with tab_general:
 
     st.subheader("Actividad del equipo")
 
-    columns = st.columns(
-        2,
-        gap="large"
-    )
+    for miembro in st.session_state.team_members:
 
-    for index, miembro in enumerate(
-        st.session_state.team_members
-    ):
-
-        with columns[index % 2]:
-
-            mostrar_miembro(miembro)
+        mostrar_miembro(miembro)
 
 
 # ==========================================
@@ -721,18 +712,9 @@ with tab_dev:
 
     if desarrolladores:
 
-        columns = st.columns(
-            2,
-            gap="large"
-        )
+        for miembro in desarrolladores:
 
-        for index, miembro in enumerate(
-            desarrolladores
-        ):
-
-            with columns[index % 2]:
-
-                mostrar_miembro(miembro)
+            mostrar_miembro(miembro)
 
     else:
 
@@ -755,18 +737,9 @@ with tab_design:
 
     if disenadores:
 
-        columns = st.columns(
-            2,
-            gap="large"
-        )
+        for miembro in disenadores:
 
-        for index, miembro in enumerate(
-            disenadores
-        ):
-
-            with columns[index % 2]:
-
-                mostrar_miembro(miembro)
+            mostrar_miembro(miembro)
 
     else:
 
