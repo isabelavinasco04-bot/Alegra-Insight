@@ -503,137 +503,98 @@ tab_general, tab_dev, tab_design = st.tabs(
 
 
 # ==========================================
-# INFORMACIÓN DEL REPORTE
+# FUNCIÓN PARA MOSTRAR REPORTE
 # ==========================================
 
-urgencia = reporte["urgencia"]
+def mostrar_reporte(reporte):
 
-if urgencia == "Alta":
-    fondo = "#fde7e9"
-    texto = "#c92f45"
-    punto = "#e34b63"
+    urgencia = reporte["urgencia"]
 
-elif urgencia == "Media":
-    fondo = "#fff9df"
-    texto = "#927000"
-    punto = "#e5b83f"
+    if urgencia == "Alta":
+        fondo = "#fde7e9"
+        texto = "#c92f45"
+        punto = "#e34b63"
 
-else:
-    fondo = "#e8f8ee"
-    texto = "#14804a"
-    punto = "#55c98b"
+    elif urgencia == "Media":
+        fondo = "#fff9df"
+        texto = "#927000"
+        punto = "#e5b83f"
 
+    else:
+        fondo = "#e8f8ee"
+        texto = "#14804a"
+        punto = "#55c98b"
 
-st.markdown(
-    f"""
-    <div style="
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        width: 100%;
-    ">
-
+    st.markdown(
+        f"""
         <div style="
-            flex: 1;
-            min-width: 0;
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:16px;
+            width:100%;
         ">
 
             <div style="
-                font-size: 18px;
-                font-weight: 700;
-                color: #17213a;
-                line-height: 1.4;
-                margin-bottom: 8px;
+                flex:1 1 auto;
+                min-width:0;
             ">
-                {reporte['titulo']}
+
+                <div style="
+                    font-size:18px;
+                    font-weight:700;
+                    color:#17213a;
+                    line-height:1.4;
+                    margin-bottom:8px;
+                    overflow-wrap:break-word;
+                ">
+                    {reporte['titulo']}
+                </div>
+
+                <div style="
+                    font-size:14px;
+                    color:#687080;
+                ">
+                    {reporte['pais']} · Reporte #{reporte['id']}
+                </div>
+
             </div>
 
             <div style="
-                font-size: 14px;
-                color: #687080;
+                flex:0 0 90px;
+                width:90px;
+                min-width:90px;
+                height:58px;
+                box-sizing:border-box;
+                background-color:{fondo};
+                color:{texto};
+                border-radius:10px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                gap:7px;
+                font-size:14px;
+                font-weight:600;
+                white-space:nowrap;
             ">
-                {reporte['pais']} · Reporte #{reporte['id']}
+
+                <span style="
+                    width:10px;
+                    height:10px;
+                    min-width:10px;
+                    border-radius:50%;
+                    background-color:{punto};
+                    display:inline-block;
+                "></span>
+
+                <span>{urgencia}</span>
+
             </div>
 
         </div>
-
-        <div style="
-            flex-shrink: 0;
-            width: 105px;
-            min-width: 105px;
-            box-sizing: border-box;
-            background-color: {fondo};
-            color: {texto};
-            border-radius: 10px;
-            padding: 12px 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-        ">
-
-            <span style="
-                width: 10px;
-                height: 10px;
-                min-width: 10px;
-                border-radius: 50%;
-                background-color: {punto};
-                display: inline-block;
-            "></span>
-
-            <span>{urgencia}</span>
-
-        </div>
-
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-        # ==========================================
-        # URGENCIA
-        # ==========================================
-
-        if reporte["urgencia"] == "Alta":
-
-            st.markdown(
-                """
-                <div class="urgency-badge urgency-high">
-                    <span class="urgency-dot"></span>
-                    <span>Alta</span>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        elif reporte["urgencia"] == "Media":
-
-            st.markdown(
-                """
-                <div class="urgency-badge urgency-medium">
-                    <span class="urgency-dot"></span>
-                    <span>Media</span>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-        else:
-
-            st.markdown(
-                """
-                <div class="urgency-badge urgency-low">
-                    <span class="urgency-dot"></span>
-                    <span>Baja</span>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
+        """,
+        unsafe_allow_html=True
+    )
 
     # ==========================================
     # ESTADO DEL REPORTE
@@ -641,27 +602,19 @@ st.markdown(
 
     if reporte["estado"] in ["En progreso", "En proceso"]:
 
-        st.info(
-            "🟡 En proceso"
-        )
+        st.info("🟡 En proceso")
 
     elif reporte["estado"] == "Pendiente":
 
-        st.caption(
-            "⚪ Pendiente"
-        )
+        st.caption("⚪ Pendiente")
 
     elif reporte["estado"] == "En revisión":
 
-        st.warning(
-            "🟠 En revisión"
-        )
+        st.warning("🟠 En revisión")
 
     elif reporte["estado"] in ["Resuelto", "Terminado"]:
 
-        st.success(
-            "🟢 Terminado"
-        )
+        st.success("🟢 Terminado")
 
 
 # ==========================================
@@ -677,12 +630,9 @@ def mostrar_miembro(miembro):
         for palabra in miembro["nombre"].split()
     ).upper()
 
-
     with st.container(border=True):
 
-        # ==========================================
         # CABECERA DEL MIEMBRO
-        # ==========================================
 
         col1, col2 = st.columns([1, 5])
 
@@ -712,7 +662,6 @@ def mostrar_miembro(miembro):
                 unsafe_allow_html=True
             )
 
-
         with col2:
 
             st.markdown(
@@ -723,15 +672,11 @@ def mostrar_miembro(miembro):
                 f"{miembro['rol']} · {miembro['estado']}"
             )
 
-
         st.markdown(
             f"**Reportes asignados · {len(reportes)}**"
         )
 
-
-        # ==========================================
-        # REPORTES DEL MIEMBRO
-        # ==========================================
+        # REPORTES
 
         if not reportes:
 
@@ -756,7 +701,10 @@ with tab_general:
 
     st.subheader("Actividad del equipo")
 
-    columns = st.columns(2, gap="large")
+    columns = st.columns(
+        2,
+        gap="large"
+    )
 
     for index, miembro in enumerate(
         st.session_state.team_members
@@ -779,10 +727,12 @@ with tab_dev:
         if miembro["rol"] == "Desarrollador"
     ]
 
-
     if desarrolladores:
 
-        columns = st.columns(2)
+        columns = st.columns(
+            2,
+            gap="large"
+        )
 
         for index, miembro in enumerate(
             desarrolladores
@@ -811,10 +761,12 @@ with tab_design:
         if miembro["rol"] == "Diseñadora"
     ]
 
-
     if disenadores:
 
-        columns = st.columns(2)
+        columns = st.columns(
+            2,
+            gap="large"
+        )
 
         for index, miembro in enumerate(
             disenadores
