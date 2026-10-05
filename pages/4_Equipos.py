@@ -482,28 +482,96 @@ tab_general, tab_dev, tab_design = st.tabs(
 
 
 # ==========================================
-# FUNCIÓN PARA MOSTRAR REPORTE
+# INFORMACIÓN DEL REPORTE
 # ==========================================
 
-def mostrar_reporte(reporte):
+urgencia = reporte["urgencia"]
 
-    # Damos más espacio a la información de urgencia
-    # para evitar que se rompa al 100% de zoom.
+if urgencia == "Alta":
+    fondo = "#fde7e9"
+    texto = "#c92f45"
+    punto = "#e34b63"
 
-    col1, col2 = st.columns([3, 2], gap="medium")
+elif urgencia == "Media":
+    fondo = "#fff9df"
+    texto = "#927000"
+    punto = "#e5b83f"
 
-    with col1:
-
-        st.markdown(
-            f"**{reporte['titulo']}**"
-        )
-
-        st.caption(
-            f"{reporte['pais']} · Reporte #{reporte['id']}"
-        )
+else:
+    fondo = "#e8f8ee"
+    texto = "#14804a"
+    punto = "#55c98b"
 
 
-    with col2:
+st.markdown(
+    f"""
+    <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        width: 100%;
+    ">
+
+        <div style="
+            flex: 1;
+            min-width: 0;
+        ">
+
+            <div style="
+                font-size: 18px;
+                font-weight: 700;
+                color: #17213a;
+                line-height: 1.4;
+                margin-bottom: 8px;
+            ">
+                {reporte['titulo']}
+            </div>
+
+            <div style="
+                font-size: 14px;
+                color: #687080;
+            ">
+                {reporte['pais']} · Reporte #{reporte['id']}
+            </div>
+
+        </div>
+
+        <div style="
+            flex-shrink: 0;
+            width: 105px;
+            min-width: 105px;
+            box-sizing: border-box;
+            background-color: {fondo};
+            color: {texto};
+            border-radius: 10px;
+            padding: 12px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        ">
+
+            <span style="
+                width: 10px;
+                height: 10px;
+                min-width: 10px;
+                border-radius: 50%;
+                background-color: {punto};
+                display: inline-block;
+            "></span>
+
+            <span>{urgencia}</span>
+
+        </div>
+
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
         # ==========================================
         # URGENCIA
