@@ -490,7 +490,7 @@ def mostrar_reporte(reporte):
     # Damos más espacio a la información de urgencia
     # para evitar que se rompa al 100% de zoom.
 
-    col1, col2 = st.columns([4.5, 1.5])
+    col1, col2 = st.columns([3, 2], gap="medium")
 
     with col1:
 
