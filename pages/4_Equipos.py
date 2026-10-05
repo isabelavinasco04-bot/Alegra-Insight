@@ -254,6 +254,26 @@ st.markdown(
         background-color: #42c77a;
     }
 
+    /* ==========================================
+   RESPONSIVE - EQUIPOS
+   ========================================== */
+
+        @media (max-width: 1400px) {
+        
+            /* Hace que las columnas de miembros ocupen todo el ancho
+               cuando la ventana queda demasiado estrecha */
+            [data-testid="stHorizontalBlock"] {
+                flex-wrap: wrap !important;
+            }
+        
+            /* Las columnas principales pasan a ocupar todo el ancho */
+            [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+                min-width: 100% !important;
+                width: 100% !important;
+                flex: 1 1 100% !important;
+            }
+        }
+
     </style>
     """,
     unsafe_allow_html=True
