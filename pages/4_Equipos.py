@@ -107,168 +107,157 @@ st.set_page_config(
 
 st.markdown(
     """
-    <style>
+<style>
 
-    .stApp {
-        background-color: #ffffff;
-    }
+.stApp {
+    background-color: #ffffff;
+}
 
-    .block-container {
-        padding-top: 2rem;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-        padding-bottom: 3rem;
-        max-width: 100%;
-    }
+.block-container {
+    padding-top: 2rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-bottom: 3rem;
+    max-width: 100%;
+}
 
-    h1, h2, h3 {
-        color: #17213a;
-    }
+h1, h2, h3 {
+    color: #17213a;
+}
 
-    .page-subtitle {
-        color: #687080;
-        font-size: 16px;
-        margin-top: -10px;
-        margin-bottom: 25px;
-    }
-
-    /* ==========================================
-       MÉTRICAS
-       ========================================== */
-
-    [data-testid="stMetric"] {
-        background-color: #f8fafb;
-        border: 1px solid #e3e7ed;
-        border-radius: 14px;
-        padding: 16px;
-    }
-
-    [data-testid="stMetricLabel"] {
-        color: #687080;
-    }
-
-    [data-testid="stMetricValue"] {
-        color: #17213a;
-    }
+.page-subtitle {
+    color: #687080;
+    font-size: 16px;
+    margin-top: -10px;
+    margin-bottom: 25px;
+}
 
 
-    /* ==========================================
-       BOTONES
-       ========================================== */
-
-    div.stButton > button {
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-
-    div.stButton > button[kind="primary"] {
-        background: linear-gradient(
-            135deg,
-            #2fb7b5,
-            #17213a
-        );
-        border: none;
-        color: white;
-    }
-
-    div.stButton > button[kind="primary"]:hover {
-        opacity: 0.9;
-    }
-
-
-    /* ==========================================
-       TABS
-       ========================================== */
-
-    button[data-baseweb="tab"] {
-        color: #687080;
-        font-weight: 600;
-    }
-
-    button[data-baseweb="tab"][aria-selected="true"] {
-        color: #2fb7b5;
-    }
-
-
-    /* ==========================================
-       CONTENEDORES
-       ========================================== */
-
-    [data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 14px;
-    }
-
-
-    /* ==========================================
-       BADGES DE URGENCIA
-       ========================================== */
-
-    .urgency-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-        padding: 7px 12px;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 1;
-        white-space: nowrap;
-        width: max-content;
-        min-width: 72px;
-        box-sizing: border-box;
-    }
-
-    .urgency-dot {
-        width: 10px;
-        height: 10px;
-        min-width: 10px;
-        border-radius: 50%;
-        display: inline-block;
-    }
-
-    .urgency-high {
-        background-color: #ffe5e8;
-        color: #c92f45;
-    }
-
-    .urgency-high .urgency-dot {
-        background-color: #d93650;
-    }
-
-    .urgency-medium {
-        background-color: #fff9d9;
-        color: #8a6d00;
-    }
-
-    .urgency-medium .urgency-dot {
-        background-color: #e9b92f;
-    }
-
-    .urgency-low {
-        background-color: #e5f8ed;
-        color: #24734a;
-    }
-
-    .urgency-low .urgency-dot {
-        background-color: #42c77a;
-    }
-
-    /* ==========================================
-   RESPONSIVE - EQUIPOS
+/* ==========================================
+   MÉTRICAS
    ========================================== */
 
-                .block-container {
-            padding-top: 2rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-            padding-bottom: 3rem;
-            max-width: 100%;
-        }
+[data-testid="stMetric"] {
+    background-color: #f8fafb;
+    border: 1px solid #e3e7ed;
+    border-radius: 14px;
+    padding: 16px;
+}
 
-    </style>
-    """,
+[data-testid="stMetricLabel"] {
+    color: #687080;
+}
+
+[data-testid="stMetricValue"] {
+    color: #17213a;
+}
+
+
+/* ==========================================
+   BOTONES
+   ========================================== */
+
+div.stButton > button {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+div.stButton > button[kind="primary"] {
+    background: linear-gradient(
+        135deg,
+        #2fb7b5,
+        #17213a
+    );
+    border: none;
+    color: white;
+}
+
+div.stButton > button[kind="primary"]:hover {
+    opacity: 0.9;
+}
+
+
+/* ==========================================
+   TABS
+   ========================================== */
+
+button[data-baseweb="tab"] {
+    color: #687080;
+    font-weight: 600;
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: #2fb7b5;
+}
+
+
+/* ==========================================
+   CONTENEDORES
+   ========================================== */
+
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 14px;
+}
+
+
+/* ==========================================
+   BADGES DE URGENCIA
+   ========================================== */
+
+.urgency-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    white-space: nowrap;
+    width: max-content;
+    min-width: 72px;
+    box-sizing: border-box;
+}
+
+.urgency-dot {
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.urgency-high {
+    background-color: #ffe5e8;
+    color: #c92f45;
+}
+
+.urgency-high .urgency-dot {
+    background-color: #d93650;
+}
+
+.urgency-medium {
+    background-color: #fff9d9;
+    color: #8a6d00;
+}
+
+.urgency-medium .urgency-dot {
+    background-color: #e9b92f;
+}
+
+.urgency-low {
+    background-color: #e5f8ed;
+    color: #24734a;
+}
+
+.urgency-low .urgency-dot {
+    background-color: #42c77a;
+}
+
+</style>
+""",
     unsafe_allow_html=True
 )
 
@@ -410,8 +399,6 @@ for miembro in st.session_state.team_members:
         todos_los_reportes.append(reporte)
 
 
-# Aceptamos tanto "En progreso" como "En proceso"
-
 total_progress = sum(
     1
     for reporte in todos_los_reportes
@@ -503,90 +490,98 @@ def mostrar_reporte(reporte):
     urgencia = reporte["urgencia"]
 
     if urgencia == "Alta":
+
         fondo = "#fde7e9"
         texto = "#c92f45"
         punto = "#e34b63"
 
     elif urgencia == "Media":
+
         fondo = "#fff9df"
         texto = "#927000"
         punto = "#e5b83f"
 
     else:
+
         fondo = "#e8f8ee"
         texto = "#14804a"
         punto = "#55c98b"
 
-    st.markdown(
+
+    # ==========================================
+    # INFORMACIÓN DEL REPORTE + URGENCIA
+    # ==========================================
+
+    st.html(
         f"""
+<div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    width:100%;
+">
+
+    <div style="
+        flex:1;
+        min-width:0;
+    ">
+
         <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:flex-start;
-            gap:16px;
-            width:100%;
+            font-size:18px;
+            font-weight:700;
+            color:#17213a;
+            line-height:1.4;
+            margin-bottom:8px;
+            overflow-wrap:break-word;
         ">
-
-            <div style="
-                flex:1 1 auto;
-                min-width:0;
-            ">
-
-                <div style="
-                    font-size:18px;
-                    font-weight:700;
-                    color:#17213a;
-                    line-height:1.4;
-                    margin-bottom:8px;
-                    overflow-wrap:break-word;
-                ">
-                    {reporte['titulo']}
-                </div>
-
-                <div style="
-                    font-size:14px;
-                    color:#687080;
-                ">
-                    {reporte['pais']} · Reporte #{reporte['id']}
-                </div>
-
-            </div>
-
-            <div style="
-                flex:0 0 90px;
-                width:90px;
-                min-width:90px;
-                height:58px;
-                box-sizing:border-box;
-                background-color:{fondo};
-                color:{texto};
-                border-radius:10px;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                gap:7px;
-                font-size:14px;
-                font-weight:600;
-                white-space:nowrap;
-            ">
-
-                <span style="
-                    width:10px;
-                    height:10px;
-                    min-width:10px;
-                    border-radius:50%;
-                    background-color:{punto};
-                    display:inline-block;
-                "></span>
-
-                <span>{urgencia}</span>
-
-            </div>
-
+            {reporte["titulo"]}
         </div>
-        """,
-        unsafe_allow_html=True
+
+        <div style="
+            font-size:14px;
+            color:#687080;
+        ">
+            {reporte["pais"]} · Reporte #{reporte["id"]}
+        </div>
+
+    </div>
+
+    <div style="
+        flex:0 0 auto;
+        min-width:90px;
+        height:58px;
+        box-sizing:border-box;
+        background-color:{fondo};
+        color:{texto};
+        border-radius:10px;
+        padding:0 12px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:7px;
+        font-size:14px;
+        font-weight:600;
+        white-space:nowrap;
+    ">
+
+        <span style="
+            width:10px;
+            height:10px;
+            min-width:10px;
+            border-radius:50%;
+            background-color:{punto};
+            display:inline-block;
+        "></span>
+
+        <span>{urgencia}</span>
+
+    </div>
+
+</div>
+"""
     )
+
 
     # ==========================================
     # ESTADO DEL REPORTE
@@ -622,9 +617,12 @@ def mostrar_miembro(miembro):
         for palabra in miembro["nombre"].split()
     ).upper()
 
+
     with st.container(border=True):
 
+        # ==========================================
         # CABECERA DEL MIEMBRO
+        # ==========================================
 
         col1, col2 = st.columns([1, 5])
 
@@ -664,11 +662,15 @@ def mostrar_miembro(miembro):
                 f"{miembro['rol']} · {miembro['estado']}"
             )
 
+
         st.markdown(
             f"**Reportes asignados · {len(reportes)}**"
         )
 
+
+        # ==========================================
         # REPORTES
+        # ==========================================
 
         if not reportes:
 
