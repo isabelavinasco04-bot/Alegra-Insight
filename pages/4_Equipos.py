@@ -115,9 +115,10 @@ st.markdown(
 
     .block-container {
         padding-top: 2rem;
-        padding-left: 3.5rem;
-        padding-right: 3.5rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
         padding-bottom: 3rem;
+        max-width: 100%;
     }
 
     h1, h2, h3 {
