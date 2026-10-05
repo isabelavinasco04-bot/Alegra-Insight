@@ -667,7 +667,7 @@ with tab_general:
 
     st.subheader("Actividad del equipo")
 
-    columns = st.columns(2)
+    columns = st.columns(2, gap="large")
 
     for index, miembro in enumerate(
         st.session_state.team_members
